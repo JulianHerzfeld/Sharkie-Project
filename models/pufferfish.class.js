@@ -1,4 +1,4 @@
-class Pufferfish extends MovableObjekt {
+class Pufferfish extends MovableObject {
 
 
 
