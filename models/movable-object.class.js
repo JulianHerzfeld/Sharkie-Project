@@ -27,14 +27,45 @@ class MovableObject {
     }
 
 
-    moveRight() {
+    draw(ctx) {
+        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+    }
 
+
+    drawFrame(ctx) {
+        if (this instanceof Character || this instanceof Pufferfish || this instanceof Endboss) {
+            ctx.beginPath();
+            ctx.lineWidth = '3';
+            ctx.strokeStyle = 'blue';
+            ctx.rect(this.x, this.y, this.width, this.height);
+            ctx.stroke();
+        }
+    }
+
+
+    playAnimation(images) {
+        let path = images[this.currentImage];
+        this.img = this.imageCache[path];
+        this.currentImage = (this.currentImage + 1) % images.length;
+    }
+
+
+    moveRight() {
+        this.x += this.speed;
     }
 
 
     moveLeft() {
-        setInterval(() => {
-            this.x -= this.speed;
-        }, 1000 / 60);
+        this.x -= this.speed;
+    }
+
+
+    moveUp() {
+        this.y -= this.speed;
+    }
+
+
+    moveDown() {
+        this.y += this.speed;
     }
 }

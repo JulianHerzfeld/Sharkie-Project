@@ -1,20 +1,10 @@
 class World {
     character = new Character();
-    enemies = [
-        new Pufferfish(),
-        new Pufferfish(),
-        new Pufferfish(),
-    ]
-    backgroundObjects = [];
-    layers = [
-        'img/3. Background/Layers/5. Water/',
-        'img/3. Background/Layers/4.Fondo 2/',
-        'img/3. Background/Layers/3.Fondo 1/',
-        'img/3. Background/Layers/2. Floor/',
-        'img/3. Background/Layers/1. Light/'
-    ];
-    files = ["D1.png", "D2.png"];
-    filesLight = ["1.png", "2.png"];
+    enemies = level1.enemies;
+    backgroundObjects = level1.backgroundObjects;
+    layers = level1.layers;
+    files = level1.files;
+    filesLight = level1.filesLight;
 
     canvas;
     ctx;
@@ -33,7 +23,7 @@ class World {
 
 
     generateBackground() {
-        let repeat = 20;
+        let repeat = 11;
 
         for (let bgPosition = -1; bgPosition < repeat; bgPosition++) {
             let offset = bgPosition * 720;
@@ -80,16 +70,27 @@ class World {
 
     addToMap(mo) {
         if (mo.otherDirection) {
-            this.ctx.save();
-            this.ctx.translate(mo.width, 0);
-            this.ctx.scale(-1, 1);
-            mo.x = mo.x * -1;
+            this.flipImage(mo);
         }
-        this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
+        mo.draw(this.ctx);
+        mo.drawFrame(this.ctx);
 
         if (mo.otherDirection) {
-            mo.x = mo.x * -1;
-            this.ctx.restore();
+            this.flipImageBack(mo);
         }
+    }
+
+
+    flipImage(mo) {
+        this.ctx.save();
+        this.ctx.translate(mo.width, 0);
+        this.ctx.scale(-1, 1);
+        mo.x = mo.x * -1;
+    }
+
+
+    flipImageBack(mo) {
+        mo.x = mo.x * -1;
+        this.ctx.restore();
     }
 }

@@ -10,6 +10,13 @@ class Pufferfish extends MovableObject {
         'img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim5.png'
     ];
 
+    offset = {
+        top: 66,
+        bottom: 150,
+        left: 5,
+        right: 15,
+    }
+
 
     constructor() {
         super().loadImage('img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim1.png');
@@ -23,12 +30,12 @@ class Pufferfish extends MovableObject {
 
 
     animate() {
-        this.moveLeft();
+        setInterval(() => {
+            this.moveLeft();
+        }, 1000 / 60);
 
         setInterval(() => {
-            let path = this.IMAGES_SWIM[this.currentImage];
-            this.img = this.imageCache[path];
-            this.currentImage = (this.currentImage + 1) % this.IMAGES_SWIM.length;
+            this.playAnimation(this.IMAGES_SWIM);
         }, 130);
     }
 
