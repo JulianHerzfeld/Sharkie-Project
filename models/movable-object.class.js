@@ -8,6 +8,8 @@ class MovableObject {
     currentImage = 0;
     speed = 0.25;
     otherDirection = false;
+    energy = 100;
+    lastHit = 0;
 
 
 
@@ -18,7 +20,7 @@ class MovableObject {
     }
 
 
-    loadImages(arr) {
+    loadImages(arr) {                            //alte version.
         arr.forEach((path) => {
             let img = new Image();
             img.src = path;
@@ -27,9 +29,31 @@ class MovableObject {
     }
 
 
+    // loadImages(arr) {                                    // vill lösung.
+    //     arr.forEach((path) => {
+    //         let img = new Image();
+    //         img.src = path;
+
+    //         img.onload = () => {
+    //             this.imageCache[path] = img;
+    //         };
+
+    //         img.onerror = () => console.error("Image failed to load: ", path);
+    //     });
+    // }
+
+
     draw(ctx) {
-        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+    if (!this.img) {
+        console.warn("Object has no image:", this);
+        return;
     }
+    if (!this.img.complete) {
+        console.warn("Image not loaded yet:", this.img.src);
+        return;
+    }
+    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+}
 
 
     drawFrame(ctx) {
@@ -40,6 +64,36 @@ class MovableObject {
             ctx.rect(this.x, this.y, this.width, this.height);
             ctx.stroke();
         }
+    }
+
+
+    isColliding(mo) {
+        return this.x + this.width > mo.x &&
+            this.y + this.height > mo.y &&
+            this.x < mo.x + mo.width &&
+            this.y < mo.y + mo.height;
+    }
+
+
+    hit() {
+        this.energy -= 5;
+        if (this.energy < 0) {
+            this.energy = 0;
+        } else {
+            this.lastHit = new Date().getTime();
+        }
+    }
+
+
+    isHurt() {
+        let timepassed = new Date().getTime() - this.lastHit;
+        timepassed = timepassed / 1000;
+        return timepassed < 0.8;
+    }
+
+
+    isDead() {
+        return this.energy == 0;
     }
 
 

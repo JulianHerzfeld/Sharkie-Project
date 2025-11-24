@@ -1,10 +1,11 @@
 class World {
     character = new Character();
-    enemies = level1.enemies;
-    backgroundObjects = level1.backgroundObjects;
-    layers = level1.layers;
-    files = level1.files;
-    filesLight = level1.filesLight;
+    level = level1;
+    // enemies = level1.enemies;
+    // backgroundObjects = level1.backgroundObjects;
+    // layers = level1.layers;
+    // files = level1.files;
+    // filesLight = level1.filesLight;
 
     canvas;
     ctx;
@@ -19,6 +20,7 @@ class World {
         this.generateBackground();
         this.draw();
         this.setWorld();
+        this.checkCollisions();
     }
 
 
@@ -29,9 +31,9 @@ class World {
             let offset = bgPosition * 720;
             let variant = (bgPosition % 2 + 2) % 2;
 
-            for (let i = 0; i < this.layers.length; i++) {
-                let file = (i === 4) ? this.filesLight[variant] : this.files[variant];
-                this.backgroundObjects.push(new BackgroundObject(this.layers[i] + file, offset));
+            for (let i = 0; i < this.level.layers.length; i++) {
+                let file = (i === 4) ? this.level.filesLight[variant] : this.level.files[variant];
+                this.level.backgroundObjects.push(new BackgroundObject(this.level.layers[i] + file, offset));
             }
         }
     }
@@ -42,14 +44,26 @@ class World {
     }
 
 
+    checkCollisions() {
+        setInterval(() => {
+            this.level.enemies.forEach((enemy) => {
+                if(this.character.isColliding(enemy)) {
+                    this.character.hit();
+                    console.log('Collision with Character, energy ', this.character.energy);
+                }
+            });
+        }, 200);
+    }
+
+
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         this.ctx.translate(this.camera_x, 0);
 
-        this.addObjectsToMap(this.backgroundObjects);
+        this.addObjectsToMap(this.level.backgroundObjects);
         this.addToMap(this.character);
-        this.addObjectsToMap(this.enemies);
+        this.addObjectsToMap(this.level.enemies);
 
         this.ctx.translate(-this.camera_x, 0);
 
