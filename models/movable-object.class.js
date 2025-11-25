@@ -1,70 +1,10 @@
-class MovableObject {
-    x = 120;
-    y = 300;
-    img;
-    width = 150;
-    height = 120;
-    imageCache = {};
-    currentImage = 0;
+class MovableObject extends DrawableObject {
     speed = 0.25;
     otherDirection = false;
     energy = 100;
     lastHit = 0;
 
 
-
-
-    loadImage(path) {
-        this.img = new Image();
-        this.img.src = path;
-    }
-
-
-    loadImages(arr) {                            //alte version.
-        arr.forEach((path) => {
-            let img = new Image();
-            img.src = path;
-            this.imageCache[path] = img;
-        });
-    }
-
-
-    // loadImages(arr) {                                    // vill lösung.
-    //     arr.forEach((path) => {
-    //         let img = new Image();
-    //         img.src = path;
-
-    //         img.onload = () => {
-    //             this.imageCache[path] = img;
-    //         };
-
-    //         img.onerror = () => console.error("Image failed to load: ", path);
-    //     });
-    // }
-
-
-    draw(ctx) {
-    if (!this.img) {
-        console.warn("Object has no image:", this);
-        return;
-    }
-    if (!this.img.complete) {
-        console.warn("Image not loaded yet:", this.img.src);
-        return;
-    }
-    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-}
-
-
-    drawFrame(ctx) {
-        if (this instanceof Character || this instanceof Pufferfish || this instanceof Endboss) {
-            ctx.beginPath();
-            ctx.lineWidth = '3';
-            ctx.strokeStyle = 'blue';
-            ctx.rect(this.x, this.y, this.width, this.height);
-            ctx.stroke();
-        }
-    }
 
 
     isColliding(mo) {
