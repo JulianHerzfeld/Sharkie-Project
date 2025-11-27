@@ -67,6 +67,16 @@ class Character extends MovableObject {
         'img/1.Sharkie/2.Long_IDLE/I13.png',
         'img/1.Sharkie/2.Long_IDLE/I14.png'
     ];
+    IMAGES_ATTACK = [
+        'img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/1.png',
+        'img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/2.png',
+        'img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/3.png',
+        'img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/4.png',
+        'img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/5.png',
+        'img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/6.png',
+        'img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/7.png',
+        'img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/8.png'
+    ];
     world;
     speed = 8;
     offset = {
@@ -76,6 +86,7 @@ class Character extends MovableObject {
         right: 70,      // width.-
     }
     lastMoveTime = Date.now();
+    isAttacking = false;
 
 
     constructor() {
@@ -86,6 +97,7 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_IDLE);
         this.loadImages(this.IMAGES_LONG_IDLE);
+        this.loadImages(this.IMAGES_ATTACK);
 
         this.animate();
     }
@@ -108,7 +120,8 @@ class Character extends MovableObject {
             const moving = this.world.keyboard.LEFT ||
                 this.world.keyboard.RIGHT ||
                 this.world.keyboard.UP ||
-                this.world.keyboard.DOWN;
+                this.world.keyboard.DOWN ||
+                this.world.keyboard.SPACE;
 
             if (moving) {
                 this.lastMoveTime = Date.now();
@@ -152,6 +165,12 @@ class Character extends MovableObject {
             else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN) {
                 this.playAnimation(this.IMAGES_SWIM);
             }
+            else if (this.isAttacking) {
+                // Attack nutzt eigene Animation → nichts tun
+            }
+            else if (this.world.keyboard.SPACE) {
+                // nichts tun.
+            }
             else if (idleTime > 3000) {
                 this.playAnimation(this.IMAGES_LONG_IDLE);
             }
@@ -177,6 +196,30 @@ class Character extends MovableObject {
         if (!this.isDead() && !this.isHurt() && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.world.keyboard.UP && !this.world.keyboard.DOWN) {
             return true;
         }
+    }
+
+
+    playAttack(onFinish) {
+        if (this.isAttacking) return; // Schon am Angreifen → überspringen
+
+        this.isAttacking = true;
+        this.currentImage = 0; // Animation beginnt bei Frame 0
+
+        let i = 0;
+
+        let interval = setInterval(() => {
+            let path = this.IMAGES_ATTACK[i];
+            this.img = this.imageCache[path];
+            i++;
+
+            // Animation fertig?
+            if (i >= this.IMAGES_ATTACK.length) {
+                clearInterval(interval);
+                this.isAttacking = false;
+
+                if (onFinish) onFinish();  // Bubble schießen
+            }
+        }, 80);
     }
 
 

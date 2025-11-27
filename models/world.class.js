@@ -95,9 +95,16 @@ class World {
 
 
     checkShootObjects() {
-        if (this.keyboard.SPACE) {
-            let bubble = new ShootableObject(this.character.x + 100, this.character.y + 100);
-            this.shootableObjects.push(bubble);
+        if (this.keyboard.SPACE && !this.character.isAttacking) {
+
+            this.character.playAttack(() => {
+                // Wird ausgeführt NACH der Attack-Animation
+                let bubble = new ShootableObject(
+                    this.character.x + 120,
+                    this.character.y + 100
+                );
+                this.shootableObjects.push(bubble);
+            });
         }
     }
 
@@ -122,6 +129,8 @@ class World {
         this.addToMap(this.character);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.shootableObjects);
+        this.addObjectsToMap(this.level.coins);
+        this.addObjectsToMap(this.level.poison);
 
         this.ctx.translate(-this.camera_x, 0);
 
