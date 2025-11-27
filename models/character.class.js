@@ -31,6 +31,42 @@ class Character extends MovableObject {
         'img/1.Sharkie/5.Hurt/1.Poisoned/3.png',
         'img/1.Sharkie/5.Hurt/1.Poisoned/4.png'
     ];
+    IMAGES_IDLE = [
+        'img/1.Sharkie/1.IDLE/1.png',
+        'img/1.Sharkie/1.IDLE/2.png',
+        'img/1.Sharkie/1.IDLE/3.png',
+        'img/1.Sharkie/1.IDLE/4.png',
+        'img/1.Sharkie/1.IDLE/5.png',
+        'img/1.Sharkie/1.IDLE/6.png',
+        'img/1.Sharkie/1.IDLE/7.png',
+        'img/1.Sharkie/1.IDLE/8.png',
+        'img/1.Sharkie/1.IDLE/9.png',
+        'img/1.Sharkie/1.IDLE/10.png',
+        'img/1.Sharkie/1.IDLE/11.png',
+        'img/1.Sharkie/1.IDLE/12.png',
+        'img/1.Sharkie/1.IDLE/13.png',
+        'img/1.Sharkie/1.IDLE/14.png',
+        'img/1.Sharkie/1.IDLE/15.png',
+        'img/1.Sharkie/1.IDLE/16.png',
+        'img/1.Sharkie/1.IDLE/17.png',
+        'img/1.Sharkie/1.IDLE/18.png'
+    ];
+    IMAGES_LONG_IDLE = [
+        'img/1.Sharkie/2.Long_IDLE/i1.png',
+        'img/1.Sharkie/2.Long_IDLE/I2.png',
+        'img/1.Sharkie/2.Long_IDLE/I3.png',
+        'img/1.Sharkie/2.Long_IDLE/I4.png',
+        'img/1.Sharkie/2.Long_IDLE/I5.png',
+        'img/1.Sharkie/2.Long_IDLE/I6.png',
+        'img/1.Sharkie/2.Long_IDLE/I7.png',
+        'img/1.Sharkie/2.Long_IDLE/I8.png',
+        'img/1.Sharkie/2.Long_IDLE/I9.png',
+        'img/1.Sharkie/2.Long_IDLE/I10.png',
+        'img/1.Sharkie/2.Long_IDLE/I11.png',
+        'img/1.Sharkie/2.Long_IDLE/I12.png',
+        'img/1.Sharkie/2.Long_IDLE/I13.png',
+        'img/1.Sharkie/2.Long_IDLE/I14.png'
+    ];
     world;
     speed = 8;
     offset = {
@@ -39,6 +75,7 @@ class Character extends MovableObject {
         left: 36,       // x.+
         right: 70,      // width.-
     }
+    lastMoveTime = Date.now();
 
 
     constructor() {
@@ -47,6 +84,8 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_SWIM);
         this.loadImages(this.IMAGES_DEAD);
         this.loadImages(this.IMAGES_HURT);
+        this.loadImages(this.IMAGES_IDLE);
+        this.loadImages(this.IMAGES_LONG_IDLE);
 
         this.animate();
     }
@@ -66,6 +105,15 @@ class Character extends MovableObject {
     animate() {
 
         setInterval(() => {
+            const moving = this.world.keyboard.LEFT ||
+                this.world.keyboard.RIGHT ||
+                this.world.keyboard.UP ||
+                this.world.keyboard.DOWN;
+
+            if (moving) {
+                this.lastMoveTime = Date.now();
+            }
+
             if (this.world.keyboard.LEFT && this.x > -600) {
                 this.moveLeft();
                 this.otherDirection = true;
@@ -93,6 +141,8 @@ class Character extends MovableObject {
         }, 1000 / 60);
 
         setInterval(() => {
+            let idleTime = Date.now() - this.lastMoveTime;
+
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
             }
@@ -102,19 +152,32 @@ class Character extends MovableObject {
             else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN) {
                 this.playAnimation(this.IMAGES_SWIM);
             }
+            else if (idleTime > 3000) {
+                this.playAnimation(this.IMAGES_LONG_IDLE);
+            }
+            else {
+                this.playAnimation(this.IMAGES_IDLE);
+            }
         }, 130);
     }
 
 
-    // drawFrame(ctx) {                                                 // roter kasten um den charakter.
-    //     if (this instanceof Character) {
-    //         ctx.beginPath();
-    //         ctx.lineWidth = '3';
-    //         ctx.strokeStyle = 'red';
-    //         ctx.rect(this.x + 36, this.y + 100, this.width - 70, this.height - 150);
-    //         ctx.stroke();
-    //     }
-    // }
+    drawFrame(ctx) {                                                 // roter kasten um den charakter.
+        if (this instanceof Character) {
+            ctx.beginPath();
+            ctx.lineWidth = '3';
+            ctx.strokeStyle = 'red';
+            ctx.rect(this.x + 36, this.y + 100, this.width - 70, this.height - 150);
+            ctx.stroke();
+        }
+    }
+
+
+    idle() {
+        if (!this.isDead() && !this.isHurt() && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.world.keyboard.UP && !this.world.keyboard.DOWN) {
+            return true;
+        }
+    }
 
 
     jump() {

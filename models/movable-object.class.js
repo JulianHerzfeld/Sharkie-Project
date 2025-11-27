@@ -8,10 +8,10 @@ class MovableObject extends DrawableObject {
 
 
     isColliding(mo) {
-        return this.x + this.width > mo.x &&
-            this.y + this.height > mo.y &&
-            this.x < mo.x + mo.width &&
-            this.y < mo.y + mo.height;
+        return this.x + this.offset.left + this.width - this.offset.right > mo.x + mo.offset.left &&
+            this.y + this.offset.top + this.height - this.offset.bottom > mo.y + mo.offset.top &&
+            this.x + this.offset.left < mo.x + mo.offset.left + mo.width - mo.offset.right &&
+            this.y + this.offset.top < mo.y + mo.offset.top + mo.height - mo.offset.bottom;
     }
 
 
@@ -37,10 +37,20 @@ class MovableObject extends DrawableObject {
     }
 
 
+    // playAnimation(images) {                          // alte version
+    //     let path = images[this.currentImage];
+    //     this.img = this.imageCache[path];
+    //     this.currentImage = (this.currentImage + 1) % images.length;
+    // }
+
     playAnimation(images) {
-        let path = images[this.currentImage];
-        this.img = this.imageCache[path];
-        this.currentImage = (this.currentImage + 1) % images.length;
+        let index = this.currentImage % images.length;
+        let path = images[index];
+
+        if (this.imageCache[path]) {
+            this.img = this.imageCache[path];
+            this.currentImage = (this.currentImage + 1) % images.length;
+        }
     }
 
 

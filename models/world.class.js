@@ -5,7 +5,9 @@ class World {
     ctx;
     keyboard;
     camera_x = 0;
-    statusBar = new StatusBar();
+    statusBarLife;
+    statusBarPoison;
+    statusBarCoins;
     shootableObjects = [];
 
 
@@ -14,9 +16,53 @@ class World {
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.generateBackground();
+        this.generateStatusBar();
         this.draw();
         this.setWorld();
         this.run();
+    }
+
+
+    generateStatusBar() {
+        this.statusBarLife = new StatusBar(this.statusBarLifeImages(), 10, -10, 100);
+        this.statusBarPoison = new StatusBar(this.statusBarPoisonImages(), 10, 20, 0);
+        this.statusBarCoins = new StatusBar(this.statusBarCoinsImages(), 10, 50, 0);
+    }
+
+
+    statusBarLifeImages() {
+        return [
+            'img/4. Marcadores/Purple/0_ .png',
+            'img/4. Marcadores/Purple/20__1.png',
+            'img/4. Marcadores/Purple/40_ .png',
+            'img/4. Marcadores/Purple/60_ .png',
+            'img/4. Marcadores/Purple/80_ .png',
+            'img/4. Marcadores/Purple/100_ .png'
+        ];
+    }
+
+
+    statusBarPoisonImages() {
+        return [
+            'img/4. Marcadores/Purple/0_.png',
+            'img/4. Marcadores/Purple/20_.png',
+            'img/4. Marcadores/Purple/40_.png',
+            'img/4. Marcadores/Purple/60_.png',
+            'img/4. Marcadores/Purple/80_.png',
+            'img/4. Marcadores/Purple/100_.png'
+        ];
+    }
+
+
+    statusBarCoinsImages() {
+        return [
+            'img/4. Marcadores/Purple/0_ _1.png',
+            'img/4. Marcadores/Purple/20_ .png',
+            'img/4. Marcadores/Purple/40_ _1.png',
+            'img/4. Marcadores/Purple/60_ _1.png',
+            'img/4. Marcadores/Purple/80_ _1.png',
+            'img/4. Marcadores/Purple/100__1.png'
+        ];
     }
 
 
@@ -49,7 +95,7 @@ class World {
 
 
     checkShootObjects() {
-        if(this.keyboard.SPACE) {
+        if (this.keyboard.SPACE) {
             let bubble = new ShootableObject(this.character.x + 100, this.character.y + 100);
             this.shootableObjects.push(bubble);
         }
@@ -57,13 +103,13 @@ class World {
 
 
     checkCollisions() {
-            this.level.enemies.forEach((enemy) => {
-                if(this.character.isColliding(enemy)) {
-                    this.character.hit();
-                    this.statusBar.setPercentage(this.character.energy);
-                    console.log('Collision with Character, energy ', this.character.energy);
-                }
-            });
+        this.level.enemies.forEach((enemy) => {
+            if (this.character.isColliding(enemy)) {
+                this.character.hit();
+                this.statusBarLife.setPercentage(this.character.energy);
+                console.log('Collision with Character, energy ', this.character.energy);
+            }
+        });
     }
 
 
@@ -71,23 +117,28 @@ class World {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         this.ctx.translate(this.camera_x, 0);
+
         this.addObjectsToMap(this.level.backgroundObjects);
-
-        this.ctx.translate(-this.camera_x, 0);
-        this.addToMap(this.statusBar);
-        this.ctx.translate(this.camera_x, 0);
-
         this.addToMap(this.character);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.shootableObjects);
 
         this.ctx.translate(-this.camera_x, 0);
 
+        this.drawStatusBar();
+
 
         let self = this;
         requestAnimationFrame(function () {
             self.draw();
         });
+    }
+
+
+    drawStatusBar() {
+        this.addToMap(this.statusBarLife);
+        this.addToMap(this.statusBarPoison);
+        this.addToMap(this.statusBarCoins);
     }
 
 

@@ -1,8 +1,8 @@
 class Endboss extends MovableObject {
 
-    height = 500;
-    width = 400;
-    y = -100;
+    height = 370;
+    width = 380;
+    y = 0;
 
     IMAGES_SWIM = [
         'img/2.Enemy/3 Final Enemy/2.floating/1.png',
@@ -20,6 +20,13 @@ class Endboss extends MovableObject {
         'img/2.Enemy/3 Final Enemy/2.floating/13.png'
     ];
 
+    offset = {
+        top: 175,
+        bottom: 245,
+        left: 25,
+        right: 60,
+    }
+
 
     constructor() {
         super().loadImage(this.IMAGES_SWIM[0]);
@@ -33,6 +40,17 @@ class Endboss extends MovableObject {
         setInterval(() => {
             this.playAnimation(this.IMAGES_SWIM);
         }, 135);
+    }
+
+
+    drawFrame(ctx) {                                                 // roter kasten um den charakter.
+        if (this instanceof Endboss) {
+            ctx.beginPath();
+            ctx.lineWidth = '3';
+            ctx.strokeStyle = 'red';
+            ctx.rect(this.x + 25, this.y + 175, this.width - 60, this.height - 245);
+            ctx.stroke();
+        }
     }
 
 

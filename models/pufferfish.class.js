@@ -11,8 +11,8 @@ class Pufferfish extends MovableObject {
     ];
 
     offset = {
-        top: 66,
-        bottom: 150,
+        top: 7,
+        bottom: 35,
         left: 5,
         right: 15,
     }
@@ -39,6 +39,16 @@ class Pufferfish extends MovableObject {
         }, 130);
     }
 
+
+    drawFrame(ctx) {                                                 // roter kasten um den charakter.
+        if (this instanceof Pufferfish) {
+            ctx.beginPath();
+            ctx.lineWidth = '3';
+            ctx.strokeStyle = 'red';
+            ctx.rect(this.x + 5, this.y + 7, this.width - 15, this.height - 35);
+            ctx.stroke();
+        }
+    }
 
     // animate() {
     //     setInterval(() => {
