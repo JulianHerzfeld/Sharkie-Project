@@ -3,6 +3,8 @@ class MovableObject extends DrawableObject {
     otherDirection = false;
     energy = 100;
     lastHit = 0;
+    coinsAmount = 0;
+    poisonAmount = 0;
 
 
 

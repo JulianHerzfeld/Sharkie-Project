@@ -77,6 +77,16 @@ class Character extends MovableObject {
         'img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/7.png',
         'img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/8.png'
     ];
+    IMAGES_POISON_ATTACK = [
+        'img/1.Sharkie/4.Attack/Bubble trap/For Whale/1.png',
+        'img/1.Sharkie/4.Attack/Bubble trap/For Whale/2.png',
+        'img/1.Sharkie/4.Attack/Bubble trap/For Whale/3.png',
+        'img/1.Sharkie/4.Attack/Bubble trap/For Whale/4.png',
+        'img/1.Sharkie/4.Attack/Bubble trap/For Whale/5.png',
+        'img/1.Sharkie/4.Attack/Bubble trap/For Whale/6.png',
+        'img/1.Sharkie/4.Attack/Bubble trap/For Whale/7.png',
+        'img/1.Sharkie/4.Attack/Bubble trap/For Whale/8.png'
+    ];
     world;
     speed = 8;
     offset = {
@@ -207,7 +217,7 @@ class Character extends MovableObject {
 
         let i = 0;
 
-        let interval = setInterval(() => {
+        let interval = setInterval(() => {                                        // hier versuchen mit if poisonAount > 0 andere attack array zu benutzen.
             let path = this.IMAGES_ATTACK[i];
             this.img = this.imageCache[path];
             i++;

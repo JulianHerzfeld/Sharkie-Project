@@ -11,15 +11,24 @@ class Poison extends MovableObject {
         'img/4. Marcadores/Posión/Animada/8.png'
     ];
 
+    offset = {
+        top: 25,
+        bottom: 27,
+        left: 10,
+        right: 20,
+    }
+    type;
 
 
-    constructor() {
+
+    constructor(x, y, type = 'poison') {
         super().loadImage('img/4. Marcadores/Posión/Animada/1.png');
         this.loadImages(this.IMAGES_POISON);
-        this.x = 450;
-        this.y = 100;
+        this.x = x;
+        this.y = y;
         this.height = 60;
         this.width = 50;
+        this.type = type;
 
         this.animate();
     }
@@ -37,7 +46,7 @@ class Poison extends MovableObject {
             ctx.beginPath();
             ctx.lineWidth = '3';
             ctx.strokeStyle = 'red';
-            ctx.rect(this.x, this.y, this.width, this.height);
+            ctx.rect(this.x + 10, this.y + 25, this.width - 20, this.height - 27);
             ctx.stroke();
         }
     }

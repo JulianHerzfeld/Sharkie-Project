@@ -7,16 +7,25 @@ class Coins extends MovableObject {
         'img/4. Marcadores/1. Coins/4.png'
     ];
 
+    offset = {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+    }
+    type;
 
 
 
-    constructor() {
+
+    constructor(x, y, type = 'coin') {
         super().loadImage('img/4. Marcadores/1. Coins/1.png');
         this.loadImages(this.IMAGES_COINS);
-        this.x = 300;
-        this.y = 100;
+        this.x = x;
+        this.y = y;
         this.height = 40;
         this.width = 40;
+        this.type = type;
 
         this.animate();
     }

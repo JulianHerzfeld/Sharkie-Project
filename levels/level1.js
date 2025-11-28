@@ -18,9 +18,10 @@ const level1 = new Level(
     ["D1.png", "D2.png"],
     ["1.png", "2.png"],
     [
-        new Coins()
-    ],
-    [
-        new Poison()
+        new Coins(300, 100),
+        new Coins(200, 100),
+        new Coins(500, 100),
+        new Coins(300, 300),
+        new Poison(450, 100)
     ]
 );

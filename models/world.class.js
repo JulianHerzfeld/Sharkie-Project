@@ -110,6 +110,12 @@ class World {
 
 
     checkCollisions() {
+        this.collisionWithEnemy();
+        this.collisionWithItem();
+    }
+
+
+    collisionWithEnemy() {
         this.level.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
                 this.character.hit();
@@ -117,6 +123,31 @@ class World {
                 console.log('Collision with Character, energy ', this.character.energy);
             }
         });
+    }
+
+
+    collisionWithItem() {
+        this.level.collectableItem.forEach((item, index) => {
+            if (this.character.isColliding(item)) {
+                this.collect(item);
+                this.statusBarCoins.setPercentage(this.character.coinsAmount);
+                this.level.collectableItem.splice(index, 1);
+                console.log(this.character.coinsAmount);
+            }
+        });
+    }
+
+
+    collect(item) {
+        if (item.type === 'coin') {
+            this.character.coinsAmount += 20;
+            this.statusBarCoins.setPercentage(this.character.coinsAmount);
+        }
+
+        if (item.type === 'poison') {
+            this.character.poisonAmount += 20;
+            this.statusBarPoison.setPercentage(this.character.poisonAmount);
+        }
     }
 
 
@@ -129,8 +160,7 @@ class World {
         this.addToMap(this.character);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.shootableObjects);
-        this.addObjectsToMap(this.level.coins);
-        this.addObjectsToMap(this.level.poison);
+        this.addObjectsToMap(this.level.collectableItem);
 
         this.ctx.translate(-this.camera_x, 0);
 

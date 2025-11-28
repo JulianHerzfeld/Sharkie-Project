@@ -4,16 +4,14 @@ class Level {
     layers;
     files;
     filesLight;
-    coins;
-    poison;
+    collectableItem;
 
-    constructor(enemies, backgroundObjects, layers, files, filesLight, coins, poison) {
+    constructor(enemies, backgroundObjects, layers, files, filesLight, collectableItem) {
         this.enemies = enemies;
         this.backgroundObjects = backgroundObjects;
         this.layers = layers;
         this.files = files;
         this.filesLight = filesLight;
-        this.coins = coins;
-        this.poison = poison;
+        this.collectableItem = collectableItem;
     }
 }
