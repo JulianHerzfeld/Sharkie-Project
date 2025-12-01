@@ -11,6 +11,7 @@ class World {
     shootableObjects = [];
 
 
+
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
@@ -99,9 +100,12 @@ class World {
 
             this.character.playAttack(() => {
                 // Wird ausgeführt NACH der Attack-Animation
+                let direction = this.character.otherDirection ? -1 : 1;
+                let offsetX = this.character.otherDirection ? -20 : 140;
                 let bubble = new ShootableObject(
-                    this.character.x + 120,
-                    this.character.y + 100
+                    this.character.x + offsetX,
+                    this.character.y + 100,
+                    direction
                 );
                 this.shootableObjects.push(bubble);
             });

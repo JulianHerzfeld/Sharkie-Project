@@ -108,6 +108,7 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_IDLE);
         this.loadImages(this.IMAGES_LONG_IDLE);
         this.loadImages(this.IMAGES_ATTACK);
+        this.loadImages(this.IMAGES_POISON_ATTACK);
 
         this.animate();
     }
@@ -137,21 +138,21 @@ class Character extends MovableObject {
                 this.lastMoveTime = Date.now();
             }
 
-            if (this.world.keyboard.LEFT && this.x > -600) {
+            if (this.world.keyboard.LEFT && this.x > -600 && !this.isAttacking) {
                 this.moveLeft();
                 this.otherDirection = true;
             }
 
-            if (this.world.keyboard.RIGHT && this.x < 1440) {  // 7200 bei 11 background wiederholungen.
+            if (this.world.keyboard.RIGHT && this.x < 1440 && !this.isAttacking) {  // 7200 bei 11 background wiederholungen.
                 this.moveRight();
                 this.otherDirection = false;
             }
 
-            if (this.world.keyboard.UP && this.y > -80) {
+            if (this.world.keyboard.UP && this.y > -80 && !this.isAttacking) {
                 this.moveUp();
             }
 
-            if (this.world.keyboard.DOWN && this.y < 310) {
+            if (this.world.keyboard.DOWN && this.y < 310 && !this.isAttacking) {
                 this.moveDown();
             }
 
@@ -173,7 +174,9 @@ class Character extends MovableObject {
                 this.playAnimation(this.IMAGES_HURT);
             }
             else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN) {
-                this.playAnimation(this.IMAGES_SWIM);
+                if (!this.isAttacking){
+                    this.playAnimation(this.IMAGES_SWIM);
+                }
             }
             else if (this.isAttacking) {
                 // Attack nutzt eigene Animation → nichts tun
@@ -217,13 +220,17 @@ class Character extends MovableObject {
 
         let i = 0;
 
-        let interval = setInterval(() => {                                        // hier versuchen mit if poisonAount > 0 andere attack array zu benutzen.
-            let path = this.IMAGES_ATTACK[i];
+        let interval = setInterval(() => {  
+            let images = this.IMAGES_ATTACK;
+            if (this.poisonAmount > 0) {
+                images = this.IMAGES_POISON_ATTACK;
+            }                                               // Als nächstes noch die bubble mit poison hinzufügen zur animation.
+            let path = images[i];
             this.img = this.imageCache[path];
             i++;
 
             // Animation fertig?
-            if (i >= this.IMAGES_ATTACK.length) {
+            if (i >= images.length) {
                 clearInterval(interval);
                 this.isAttacking = false;
 
