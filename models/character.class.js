@@ -93,7 +93,7 @@ class Character extends MovableObject {
         top: 100,       // y.+ 
         bottom: 150,    // height.-
         left: 36,       // x.+
-        right: 70,      // width.-
+        right: 70      // width.-
     }
     lastMoveTime = Date.now();
     isAttacking = false;
@@ -224,7 +224,7 @@ class Character extends MovableObject {
             let images = this.IMAGES_ATTACK;
             if (this.poisonAmount > 0) {
                 images = this.IMAGES_POISON_ATTACK;
-            }                                               // Als nächstes noch die bubble mit poison hinzufügen zur animation.
+            }
             let path = images[i];
             this.img = this.imageCache[path];
             i++;

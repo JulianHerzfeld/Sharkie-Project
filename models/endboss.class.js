@@ -24,7 +24,13 @@ class Endboss extends MovableObject {
         top: 175,
         bottom: 245,
         left: 25,
-        right: 60,
+        right: 60
+    }
+    transitionOffset = {
+        top: 175,
+        bottom: 245,
+        left: 25,
+        right: 60
     }
 
 

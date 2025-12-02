@@ -91,6 +91,7 @@ class World {
         setInterval(() => {
             this.checkCollisions();
             this.checkShootObjects();
+            this.checkEnemyCharacterDistance();
         }, 150);
     }
 
@@ -102,13 +103,26 @@ class World {
                 // Wird ausgeführt NACH der Attack-Animation
                 let direction = this.character.otherDirection ? -1 : 1;
                 let offsetX = this.character.otherDirection ? -20 : 140;
+                let isPoison = this.character.poisonAmount > 0;
+                let damage = isPoison ? 25 : 10;
                 let bubble = new ShootableObject(
                     this.character.x + offsetX,
                     this.character.y + 100,
-                    direction
+                    direction,
+                    damage,
+                    isPoison
                 );
+                this.usePoisonAmount(isPoison);
                 this.shootableObjects.push(bubble);
             });
+        }
+    }
+
+
+    usePoisonAmount(isPoison) {
+        if (isPoison) {
+            this.character.poisonAmount -= 20;
+            this.statusBarPoison.setPercentage(this.character.poisonAmount);
         }
     }
 
@@ -142,6 +156,26 @@ class World {
     }
 
 
+    checkEnemyCharacterDistance() {
+        this.level.enemies.forEach(enemy => {
+
+            if (enemy.isTransition) return; // läuft gerade, nicht erneut starten
+
+            let distance_x = Math.abs(this.character.x + this.character.offset.left - enemy.x + enemy.offset.left);
+            let distance_y = Math.abs(this.character.y + this.character.offset.top - enemy.y + enemy.offset.top);
+
+            // Gegner hat 200 px Abstand?
+            if (distance_x < 200 && distance_y < 120) {
+
+                enemy.playTransition(() => {
+                    enemy.useAlternateSwim = true;
+                    enemy.offset = enemy.transitionOffset;
+                });
+            }
+        });
+    }
+
+
     collect(item) {
         if (item.type === 'coin') {
             this.character.coinsAmount += 20;
@@ -161,10 +195,10 @@ class World {
         this.ctx.translate(this.camera_x, 0);
 
         this.addObjectsToMap(this.level.backgroundObjects);
+        this.addObjectsToMap(this.level.collectableItem);
         this.addToMap(this.character);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.shootableObjects);
-        this.addObjectsToMap(this.level.collectableItem);
 
         this.ctx.translate(-this.camera_x, 0);
 
@@ -196,8 +230,11 @@ class World {
         if (mo.otherDirection) {
             this.flipImage(mo);
         }
-        mo.draw(this.ctx);
-        mo.drawFrame(this.ctx);
+
+        if (mo.img && mo.img.complete && mo.img.naturalWidth !== 0) {
+            mo.draw(this.ctx);
+            mo.drawFrame(this.ctx);
+        }
 
         if (mo.otherDirection) {
             this.flipImageBack(mo);
