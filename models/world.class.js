@@ -9,6 +9,7 @@ class World {
     statusBarPoison;
     statusBarCoins;
     shootableObjects = [];
+    endbossSpawned = false;
 
 
 
@@ -92,6 +93,8 @@ class World {
             this.checkCollisions();
             this.checkShootObjects();
             this.checkEnemyCharacterDistance();
+            this.checkSpawnEndboss();
+            this.checkEndbossAttack();
         }, 150);
     }
 
@@ -158,19 +161,93 @@ class World {
 
     checkEnemyCharacterDistance() {
         this.level.enemies.forEach(enemy => {
+            if (enemy instanceof Pufferfish) {
+                if (enemy.isTransition) return; // läuft gerade, nicht erneut starten
 
-            if (enemy.isTransition) return; // läuft gerade, nicht erneut starten
+                let distance_x = Math.abs((this.character.x + this.character.offset.left) - (enemy.x + enemy.offset.left));
+                let distance_y = Math.abs((this.character.y + this.character.offset.top) - (enemy.y + enemy.offset.top));
 
-            let distance_x = Math.abs(this.character.x + this.character.offset.left - enemy.x + enemy.offset.left);
-            let distance_y = Math.abs(this.character.y + this.character.offset.top - enemy.y + enemy.offset.top);
+                // Gegner hat 200 px Abstand?
+                if (distance_x < 200 && distance_y < 120) {
 
-            // Gegner hat 200 px Abstand?
-            if (distance_x < 200 && distance_y < 120) {
+                    enemy.playTransition(() => {
+                        enemy.useAlternateSwim = true;
+                        enemy.offset = enemy.transitionOffset;
+                    });
+                }
+            }
+        });
+    }
 
-                enemy.playTransition(() => {
-                    enemy.useAlternateSwim = true;
-                    enemy.offset = enemy.transitionOffset;
-                });
+
+    checkSpawnEndboss() {
+        if (this.endbossSpawned) return;
+
+        if (this.character.x > 800) {
+
+            this.endbossSpawned = true;
+
+            this.endboss = new Endboss(1000, 0); // Position für Boss
+            this.endboss.world = this;
+
+            // Spawn Animation starten
+            this.endboss.playSpawn(() => {
+                this.endboss.isSpawned = true;
+            });
+
+            // Boss zum Level hinzufügen
+            this.level.enemies.push(this.endboss);
+        }
+    }
+
+
+    // checkEndbossAttack() {
+    //     this.level.enemies.forEach(enemy => {
+    //         if (enemy instanceof Endboss) {
+
+    //             if (!enemy) return;
+
+    //             // Abstand berechnen
+    //             let distanceX = Math.abs((this.character.x + this.character.offset.left) - (enemy.x + enemy.offset.left));       // attack distanz stimmt noch nicht.
+    //             let distanceY = Math.abs((this.character.y + this.character.offset.top) - (enemy.y + enemy.offset.top));
+
+
+
+    //             // Attack-Distanz (anpassen nach Geschmack)
+    //             if (distanceX < 200 && distanceY < 100) {
+
+    //                 enemy.playAttack();
+    //             }
+    //         }
+    //     });
+    // }
+
+
+    checkEndbossAttack() {                                                      // distanz passt noch nicht.
+        this.level.enemies.forEach(enemy => {
+            if (!(enemy instanceof Endboss)) return;
+
+            // --- Mittelpunkt der Charakter-Hitbox ---
+            let charCenterX = this.character.x + this.character.offset.left
+                + (this.character.width - this.character.offset.left - this.character.offset.right) / 2;
+
+            let charCenterY = this.character.y + this.character.offset.top
+                + (this.character.height - this.character.offset.top - this.character.offset.bottom) / 2;
+
+            // --- Mittelpunkt der Boss-Hitbox ---
+            let bossCenterX = enemy.x + enemy.offset.left
+                + (enemy.width - enemy.offset.left - enemy.offset.right) / 2;
+
+            let bossCenterY = enemy.y + enemy.offset.top
+                + (enemy.height - enemy.offset.top - enemy.offset.bottom) / 2;
+
+            // --- Abstand ---
+            let distanceX = Math.abs(charCenterX - bossCenterX);
+            let distanceY = Math.abs(charCenterY - bossCenterY);
+
+            // --- Angriffsbereich ---
+            if (distanceX < 300 && distanceY < 100) {
+                enemy.playAttack();
             }
         });
     }

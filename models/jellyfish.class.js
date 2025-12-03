@@ -1,0 +1,59 @@
+class Jellyfish extends MovableObject {
+    width = 70;
+    height = 90;
+    directionY = 1;
+
+    IMAGES_SWIM = [
+        'img/2.Enemy/2 Jelly fish/Regular damage/Yellow 1.png',
+        'img/2.Enemy/2 Jelly fish/Regular damage/Yellow 2.png',
+        'img/2.Enemy/2 Jelly fish/Regular damage/Yellow 3.png',
+        'img/2.Enemy/2 Jelly fish/Regular damage/Yellow 4.png'
+    ];
+
+    offset = {
+        top: 7,
+        bottom: 18,
+        left: 5,
+        right: 10
+    }
+
+
+    constructor(x, y) {
+        super().loadImage('img/2.Enemy/2 Jelly fish/Regular damage/Yellow 1.png');
+        this.loadImages(this.IMAGES_SWIM);
+
+        this.x = x + 0 + Math.random() * 500;
+        this.y = y;
+        this.startY = y;
+        this.animate();
+    }
+
+
+    animate() {                                         
+        setInterval(() => {
+            this.y += this.directionY * 1.5;
+            if (this.y > this.startY + 30) {
+                this.directionY = -1;
+            }
+            if (this.y < this.startY -30) {
+                this.directionY = 1;
+            }
+        }, 1000 / 30);
+
+        setInterval(() => {
+                this.playAnimation(this.IMAGES_SWIM);
+        }, 250);
+    }
+
+
+    drawFrame(ctx) {
+        if (this instanceof Jellyfish) {
+            ctx.beginPath();
+            ctx.lineWidth = '3';
+            ctx.strokeStyle = 'red';
+            ctx.rect(this.x + 5, this.y + 7, this.width - 10, this.height - 18);
+            ctx.stroke();
+        }
+    }
+
+}
