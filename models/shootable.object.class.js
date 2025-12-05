@@ -3,6 +3,13 @@ class ShootableObject extends MovableObject {
     BUBBLE_IMAGE = 'img/1.Sharkie/4.Attack/Bubble trap/Bubble.png';
     POISON_BUBBLE_IMAGE = 'img/1.Sharkie/4.Attack/Bubble trap/Poisoned Bubble (for whale).png';
 
+    offset = {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
+    }
+
 
 
     constructor(x, y, direction, damage, isPoisonBubble = false) {

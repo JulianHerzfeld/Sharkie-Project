@@ -40,6 +40,19 @@ class Endboss extends MovableObject {
         'img/2.Enemy/3 Final Enemy/Attack/5.png',
         'img/2.Enemy/3 Final Enemy/Attack/6.png'
     ];
+    IMAGES_HURT = [
+        'img/2.Enemy/3 Final Enemy/Hurt/1.png',
+        'img/2.Enemy/3 Final Enemy/Hurt/2.png',
+        'img/2.Enemy/3 Final Enemy/Hurt/3.png',
+        'img/2.Enemy/3 Final Enemy/Hurt/4.png'
+    ];
+    IMAGES_DEAD = [
+        'img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 6.png',
+        'img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 7.png',
+        'img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 8.png',
+        'img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 9.png',
+        'img/2.Enemy/3 Final Enemy/Dead/Mesa de trabajo 2 copia 10.png'
+    ];
 
     offset = {
         top: 175,
@@ -57,6 +70,7 @@ class Endboss extends MovableObject {
     isSpawned = false;
     isAttacking = false;
     speed = 10;
+    energy = 100;
 
 
     constructor(x, y) {
@@ -64,6 +78,8 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_SWIM);
         this.loadImages(this.IMAGES_SPAWN);
         this.loadImages(this.IMAGES_ATTACK);
+        this.loadImages(this.IMAGES_HURT);
+        this.loadImages(this.IMAGES_DEAD);
         this.x = x;  //1200
         this.y = y
         this.animate();
@@ -73,7 +89,10 @@ class Endboss extends MovableObject {
     animate() {
         setInterval(() => {
             if (this.isSpawning) return;
-            if (this.isSpawned && !this.isAttacking) {
+            if (this.isHurt()) return;
+            if (this.isDead()) return;
+            if (this.isFinalDead) return;
+            if (this.isSpawned && !this.isAttacking) {                       // nicht schwimmen wenn hurt animation läuft. fehlt noch.
 
                 this.playAnimation(this.IMAGES_SWIM);
 
@@ -108,6 +127,50 @@ class Endboss extends MovableObject {
     }
 
 
+    playHurt() {
+        if (this.isHurtAnimationRunning) return;
+
+        this.isHurtAnimationRunning = true;
+        this.currentImage = 0;
+
+        let i = 0;
+        let interval = setInterval(() => {
+            let path = this.IMAGES_HURT[i];
+            this.img = this.imageCache[path];
+            i++;
+
+            if (i >= this.IMAGES_HURT.length || !this.isHurt()) {
+                clearInterval(interval);
+                this.isHurtAnimationRunning = false;
+            }
+        }, 80);
+    }
+
+
+    die() {
+        if (this.isDeadAnimationRunning) return;
+
+        this.isDeadAnimationRunning = true;
+        this.energy = 0;
+        this.currentImage = 0;
+
+        let i = 0;
+
+        let interval = setInterval(() => {
+            let path = this.IMAGES_DEAD[i];
+            this.img = this.imageCache[path];
+            i++;
+
+            if (i >= this.IMAGES_DEAD.length) {
+                clearInterval(interval);
+
+                // Spiel endet – Boss bleibt stehen
+                this.isFinalDead = true;
+            }
+        }, 120);
+    }
+
+
     moveTowards(character) {
         // Mittelpunkt des Charakters anpeilen
         let targetX = character.x + character.width / 2;
@@ -131,13 +194,14 @@ class Endboss extends MovableObject {
 
     playAttack() {
         if (this.isAttacking) return;
+        if (this.isDead()) return;
 
         this.isAttacking = true;
         this.currentImage = 0;
 
         let i = 0;
 
-        let interval = setInterval(() => {  
+        let interval = setInterval(() => {
             let images = this.IMAGES_ATTACK;
             let path = images[i];
             this.img = this.imageCache[path];

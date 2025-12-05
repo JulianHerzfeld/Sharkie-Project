@@ -18,8 +18,8 @@ class MovableObject extends DrawableObject {
     }
 
 
-    hit() {
-        this.energy -= 5;
+    hit(damage) {
+        this.energy -= damage;
         if (this.energy < 0) {
             this.energy = 0;
         } else {
@@ -40,11 +40,26 @@ class MovableObject extends DrawableObject {
     }
 
 
-    // playAnimation(images) {                          // alte version
-    //     let path = images[this.currentImage];
-    //     this.img = this.imageCache[path];
-    //     this.currentImage = (this.currentImage + 1) % images.length;
-    // }
+    die() {
+        this.energy = 0;
+        let i = 0
+
+        let interval = setInterval(() => {  
+            let images = this.IMAGES_DEAD;
+            let path = images[i];
+            this.img = this.imageCache[path];
+            i++;
+
+            if (i >= images.length) {
+                clearInterval(interval);
+            }
+        }, 120);
+
+        setInterval(() => {
+            this.remove = true;
+        }, 1000);
+    }
+
 
     playAnimation(images) {
         let index = this.currentImage % images.length;

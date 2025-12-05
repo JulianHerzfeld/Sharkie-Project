@@ -97,6 +97,8 @@ class Character extends MovableObject {
     }
     lastMoveTime = Date.now();
     isAttacking = false;
+    canShoot = true;
+    shootCooldown = 1500;
 
 
     constructor() {

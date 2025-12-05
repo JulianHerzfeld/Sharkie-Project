@@ -8,6 +8,7 @@ class World {
     statusBarLife;
     statusBarPoison;
     statusBarCoins;
+    statusBarLifeBoss;
     shootableObjects = [];
     endbossSpawned = false;
 
@@ -29,6 +30,8 @@ class World {
         this.statusBarLife = new StatusBar(this.statusBarLifeImages(), 10, -10, 100);
         this.statusBarPoison = new StatusBar(this.statusBarPoisonImages(), 10, 20, 0);
         this.statusBarCoins = new StatusBar(this.statusBarCoinsImages(), 10, 50, 0);
+        this.statusBarLifeBoss = new StatusBar(this.statusBarLifeBossImages(), 560, -10, 100);
+        this.statusBarLifeBoss.hide = true;
     }
 
 
@@ -68,6 +71,18 @@ class World {
     }
 
 
+    statusBarLifeBossImages() {
+        return [
+            'img/4. Marcadores/orange/0_  copia.png',
+            'img/4. Marcadores/orange/20_ copia 2.png',
+            'img/4. Marcadores/orange/40_  copia.png',
+            'img/4. Marcadores/orange/60_  copia.png',
+            'img/4. Marcadores/orange/80_  copia.png',
+            'img/4. Marcadores/orange/100_  copia.png'
+        ];
+    }
+
+
     generateBackground() {
         let repeat = 11;
 
@@ -100,14 +115,16 @@ class World {
 
 
     checkShootObjects() {
-        if (this.keyboard.SPACE && !this.character.isAttacking) {
+        if (this.keyboard.SPACE && this.character.canShoot && !this.character.isAttacking && !this.character.isHurt()) {
+
+            this.character.canShoot = false;
 
             this.character.playAttack(() => {
                 // Wird ausgeführt NACH der Attack-Animation
                 let direction = this.character.otherDirection ? -1 : 1;
                 let offsetX = this.character.otherDirection ? -20 : 140;
                 let isPoison = this.character.poisonAmount > 0;
-                let damage = isPoison ? 25 : 10;
+                let damage = isPoison ? 20 : 10;
                 let bubble = new ShootableObject(
                     this.character.x + offsetX,
                     this.character.y + 100,
@@ -118,6 +135,10 @@ class World {
                 this.usePoisonAmount(isPoison);
                 this.shootableObjects.push(bubble);
             });
+
+            setTimeout(() => {
+                this.character.canShoot = true;
+            }, this.character.shootCooldown);
         }
     }
 
@@ -133,13 +154,14 @@ class World {
     checkCollisions() {
         this.collisionWithEnemy();
         this.collisionWithItem();
+        this.collisionBubbleWithEnemy();
     }
 
 
     collisionWithEnemy() {
         this.level.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
-                this.character.hit();
+                this.character.hit(5);
                 this.statusBarLife.setPercentage(this.character.energy);
                 console.log('Collision with Character, energy ', this.character.energy);
             }
@@ -151,10 +173,47 @@ class World {
         this.level.collectableItem.forEach((item, index) => {
             if (this.character.isColliding(item)) {
                 this.collect(item);
-                this.statusBarCoins.setPercentage(this.character.coinsAmount);
+                this.statusBarCoins.setPercentage(this.character.coinsAmount);          // diese zeile kann evtl. entfernt werden.
                 this.level.collectableItem.splice(index, 1);
                 console.log(this.character.coinsAmount);
             }
+        });
+    }
+
+
+    collisionBubbleWithEnemy() {
+        this.shootableObjects.forEach((bubble, bIndex) => {
+
+            this.level.enemies.forEach((enemy, eIndex) => {
+
+                if (!bubble || !enemy) return;
+
+                // Collision Check
+                if (bubble.isColliding(enemy)) {
+
+                    enemy.hit(bubble.damage);
+                    this.shootableObjects.splice(bIndex, 1);
+
+                    if (enemy instanceof Endboss) {
+
+                        this.statusBarLifeBoss.setPercentage(enemy.energy);
+
+                        enemy.playHurt();
+
+                        if (enemy.energy <= 0) {
+                            enemy.die(); // Boss-Death-Animation
+                        }
+
+                    } else {
+
+                        // Normale Gegner
+                        if (enemy.energy <= 0) {
+                            enemy.die();
+                        }
+                    }
+                }
+            });
+
         });
     }
 
@@ -168,7 +227,7 @@ class World {
                 let distance_y = Math.abs((this.character.y + this.character.offset.top) - (enemy.y + enemy.offset.top));
 
                 // Gegner hat 200 px Abstand?
-                if (distance_x < 200 && distance_y < 120) {
+                if (distance_x < 200 && distance_y < 120 && !enemy.energy <= 0) {
 
                     enemy.playTransition(() => {
                         enemy.useAlternateSwim = true;
@@ -183,16 +242,17 @@ class World {
     checkSpawnEndboss() {
         if (this.endbossSpawned) return;
 
-        if (this.character.x > 800) {
+        if (this.character.x > 800) {                      // anpassen für endboss wann er spawnt.
 
             this.endbossSpawned = true;
 
-            this.endboss = new Endboss(1000, 0); // Position für Boss
+            this.endboss = new Endboss(1000, 0);            // Position für Boss.
             this.endboss.world = this;
 
             // Spawn Animation starten
             this.endboss.playSpawn(() => {
                 this.endboss.isSpawned = true;
+                this.statusBarLifeBoss.hide = false;
             });
 
             // Boss zum Level hinzufügen
@@ -201,55 +261,51 @@ class World {
     }
 
 
-    // checkEndbossAttack() {
-    //     this.level.enemies.forEach(enemy => {
-    //         if (enemy instanceof Endboss) {
-
-    //             if (!enemy) return;
-
-    //             // Abstand berechnen
-    //             let distanceX = Math.abs((this.character.x + this.character.offset.left) - (enemy.x + enemy.offset.left));       // attack distanz stimmt noch nicht.
-    //             let distanceY = Math.abs((this.character.y + this.character.offset.top) - (enemy.y + enemy.offset.top));
-
-
-
-    //             // Attack-Distanz (anpassen nach Geschmack)
-    //             if (distanceX < 200 && distanceY < 100) {
-
-    //                 enemy.playAttack();
-    //             }
-    //         }
-    //     });
-    // }
-
-
-    checkEndbossAttack() {                                                      // distanz passt noch nicht.
+    checkEndbossAttack() {
         this.level.enemies.forEach(enemy => {
             if (!(enemy instanceof Endboss)) return;
 
             // --- Mittelpunkt der Charakter-Hitbox ---
-            let charCenterX = this.character.x + this.character.offset.left
-                + (this.character.width - this.character.offset.left - this.character.offset.right) / 2;
-
-            let charCenterY = this.character.y + this.character.offset.top
-                + (this.character.height - this.character.offset.top - this.character.offset.bottom) / 2;
+            let charCenterX = this.characterCenterX();
+            let charCenterY = this.characterCenterY();
 
             // --- Mittelpunkt der Boss-Hitbox ---
-            let bossCenterX = enemy.x + enemy.offset.left
-                + (enemy.width - enemy.offset.left - enemy.offset.right) / 2;
-
-            let bossCenterY = enemy.y + enemy.offset.top
-                + (enemy.height - enemy.offset.top - enemy.offset.bottom) / 2;
+            let bossCenterX = this.endbossCenterX(enemy);
+            let bossCenterY = this.endbossCenterY(enemy);
 
             // --- Abstand ---
             let distanceX = Math.abs(charCenterX - bossCenterX);
             let distanceY = Math.abs(charCenterY - bossCenterY);
 
             // --- Angriffsbereich ---
-            if (distanceX < 300 && distanceY < 100) {
+            if (distanceX < 250 && distanceY < 120) {
                 enemy.playAttack();
             }
         });
+    }
+
+
+    characterCenterX() {
+        return this.character.x + this.character.offset.left
+            + (this.character.width - this.character.offset.left - this.character.offset.right) / 2;
+    }
+
+
+    characterCenterY() {
+        return this.character.y + this.character.offset.top
+            + (this.character.height - this.character.offset.top - this.character.offset.bottom) / 2;
+    }
+
+
+    endbossCenterX(enemy) {
+        return enemy.x + enemy.offset.left
+            + (enemy.width - enemy.offset.left - enemy.offset.right) / 2;
+    }
+
+
+    endbossCenterY(enemy) {
+        return enemy.y + enemy.offset.top
+            + (enemy.height - enemy.offset.top - 175) / 2;
     }
 
 
@@ -279,6 +335,7 @@ class World {
 
         this.ctx.translate(-this.camera_x, 0);
 
+        this.level.enemies = this.level.enemies.filter(e => !e.remove);
         this.drawStatusBar();
 
 
@@ -293,6 +350,9 @@ class World {
         this.addToMap(this.statusBarLife);
         this.addToMap(this.statusBarPoison);
         this.addToMap(this.statusBarCoins);
+        if (!this.statusBarLifeBoss.hide) {
+            this.addToMap(this.statusBarLifeBoss);
+        }
     }
 
 
