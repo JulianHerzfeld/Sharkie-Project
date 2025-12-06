@@ -71,6 +71,7 @@ class Endboss extends MovableObject {
     isAttacking = false;
     speed = 10;
     energy = 100;
+    currentAnimationInterval = null;
 
 
     constructor(x, y) {
@@ -91,6 +92,7 @@ class Endboss extends MovableObject {
             if (this.isSpawning) return;
             if (this.isHurt()) return;
             if (this.isDead()) return;
+            if (this.isHurtAnimationRunning) return;
             if (this.isFinalDead) return;
             if (this.isSpawned && !this.isAttacking) {                       // nicht schwimmen wenn hurt animation läuft. fehlt noch.
 
@@ -129,7 +131,10 @@ class Endboss extends MovableObject {
 
     playHurt() {
         if (this.isHurtAnimationRunning) return;
+        if (!this.isHurt()) return;
+        if (this.isDead()) return;
 
+        this.stopCurrentAnimation();
         this.isHurtAnimationRunning = true;
         this.currentImage = 0;
 
@@ -195,13 +200,17 @@ class Endboss extends MovableObject {
     playAttack() {
         if (this.isAttacking) return;
         if (this.isDead()) return;
+        if (this.isHurt()) return;
+        if (this.isHurtAnimationRunning) return;
+
+        this.stopCurrentAnimation();
 
         this.isAttacking = true;
         this.currentImage = 0;
 
         let i = 0;
 
-        let interval = setInterval(() => {
+        this.currentAnimationInterval = setInterval(() => {
             let images = this.IMAGES_ATTACK;
             let path = images[i];
             this.img = this.imageCache[path];
@@ -209,10 +218,19 @@ class Endboss extends MovableObject {
 
             // Animation fertig?
             if (i >= images.length) {
-                clearInterval(interval);
+                this.stopCurrentAnimation();
                 this.isAttacking = false;
             }
         }, 80);
+    }
+
+
+    stopCurrentAnimation() {
+        if (this.currentAnimationInterval) {
+            clearInterval(this.currentAnimationInterval);
+            this.currentAnimationInterval = null;
+        }
+        this.isAttacking = false;
     }
 
 
