@@ -112,7 +112,7 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_ATTACK);
         this.loadImages(this.IMAGES_POISON_ATTACK);
 
-        this.animate();
+        // this.animate();
     }
 
 
@@ -129,7 +129,7 @@ class Character extends MovableObject {
 
     animate() {
 
-        setInterval(() => {
+        this.world.setStoppableInterval(() => {
             const moving = this.world.keyboard.LEFT ||
                 this.world.keyboard.RIGHT ||
                 this.world.keyboard.UP ||
@@ -166,11 +166,11 @@ class Character extends MovableObject {
 
         }, 1000 / 60);
 
-        setInterval(() => {
+        this.world.setStoppableInterval(() => {
             let idleTime = Date.now() - this.lastMoveTime;
 
             if (this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD);
+                this.die();
             }
             else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
@@ -239,6 +239,31 @@ class Character extends MovableObject {
                 if (onFinish) onFinish();  // Bubble schießen
             }
         }, 80);
+    }
+
+
+    die() {
+        if (this.isDeadAnimationRunning) return;
+
+        this.isDeadAnimationRunning = true;
+        this.energy = 0;
+        this.currentImage = 0;
+
+        let i = 0;
+
+        let interval = setInterval(() => {
+            let path = this.IMAGES_DEAD[i];
+            this.img = this.imageCache[path];
+            i++;
+
+            if (i >= this.IMAGES_DEAD.length) {
+                clearInterval(interval);
+
+                // Spiel endet – Boss bleibt stehen
+                this.isFinalDead = true;
+            }
+        }, 120);
+        this.world.stopGame();
     }
 
 

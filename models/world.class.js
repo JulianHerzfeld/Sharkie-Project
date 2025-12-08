@@ -11,6 +11,7 @@ class World {
     statusBarLifeBoss;
     shootableObjects = [];
     endbossSpawned = false;
+    intervalIds = [];
 
 
 
@@ -23,6 +24,19 @@ class World {
         this.draw();
         this.setWorld();
         this.run();
+        this.assignWorldToAll(this.level.enemies);
+        this.assignWorldToAll(this.level.collectableItem);
+    }
+
+
+    setStoppableInterval(fn, time) {
+        let id = setInterval(fn, time);
+        this.intervalIds.push(id);
+    }
+
+
+    stopGame() {
+        this.intervalIds.forEach(clearInterval);
     }
 
 
@@ -100,17 +114,26 @@ class World {
 
     setWorld() {
         this.character.world = this;
+        if (this.character.animate) this.character.animate();
     }
 
 
     run() {
-        setInterval(() => {
+        this.setStoppableInterval(() => {
             this.checkCollisions();
             this.checkShootObjects();
             this.checkEnemyCharacterDistance();
             this.checkSpawnEndboss();
             this.checkEndbossAttack();
         }, 150);
+    }
+
+
+    assignWorldToAll(objects) {
+        objects.forEach(o => {
+            o.world = this;
+            if (o.animate) o.animate();
+        });
     }
 
 
@@ -132,6 +155,7 @@ class World {
                     damage,
                     isPoison
                 );
+                bubble.world = this;
                 this.usePoisonAmount(isPoison);
                 this.shootableObjects.push(bubble);
             });
@@ -248,6 +272,7 @@ class World {
 
             this.endboss = new Endboss(1000, 0);            // Position für Boss.
             this.endboss.world = this;
+            if (this.endboss.animate) this.endboss.animate();
 
             // Spawn Animation starten
             this.endboss.playSpawn(() => {
@@ -329,9 +354,9 @@ class World {
 
         this.addObjectsToMap(this.level.backgroundObjects);
         this.addObjectsToMap(this.level.collectableItem);
-        this.addToMap(this.character);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.shootableObjects);
+        this.addToMap(this.character);
 
         this.ctx.translate(-this.camera_x, 0);
 

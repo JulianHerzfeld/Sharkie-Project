@@ -44,6 +44,7 @@ class Pufferfish extends MovableObject {
     isTransition = false;
     useAlternateSwim = false;
     energy = 5;
+    world;
 
 
     constructor(x, y) {
@@ -56,7 +57,7 @@ class Pufferfish extends MovableObject {
         this.x = x + 200 + Math.random() * 500;
         this.y = y + 0 + Math.random() * 400;
         this.speed = 0.25 + Math.random() * 0.5;
-        this.animate();
+        // this.animate();
     }
 
 
@@ -89,13 +90,13 @@ class Pufferfish extends MovableObject {
 
 
     animate() {                                         
-        setInterval(() => {
+        this.world.setStoppableInterval(() => {
             if (!this.energy == 0) {
                 this.moveLeft();
             }
         }, 1000 / 60);
 
-        setInterval(() => {
+        this.world.setStoppableInterval(() => {
             if (!this.isTransition && !this.useAlternateSwim && !this.energy == 0) {
                 this.playAnimation(this.IMAGES_SWIM);
             } else if (this.useAlternateSwim && !this.energy == 0) {

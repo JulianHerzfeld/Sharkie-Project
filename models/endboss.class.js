@@ -83,12 +83,12 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_DEAD);
         this.x = x;  //1200
         this.y = y
-        this.animate();
+        // this.animate();
     }
 
 
     animate() {
-        setInterval(() => {
+        this.world.setStoppableInterval(() => {
             if (this.isSpawning) return;
             if (this.isHurt()) return;
             if (this.isDead()) return;
@@ -173,6 +173,7 @@ class Endboss extends MovableObject {
                 this.isFinalDead = true;
             }
         }, 120);
+        this.world.stopGame();
     }
 
 

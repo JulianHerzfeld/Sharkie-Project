@@ -33,12 +33,12 @@ class Jellyfish extends MovableObject {
         this.x = x + 0 + Math.random() * 500;
         this.y = y;
         this.startY = y;
-        this.animate();
+        // this.animate();
     }
 
 
     animate() {                                         
-        setInterval(() => {
+        this.world.setStoppableInterval(() => {
             this.y += this.directionY * 1.5;
             if (this.y > this.startY + 30 && !this.energy == 0) {
                 this.directionY = -1;
@@ -48,7 +48,7 @@ class Jellyfish extends MovableObject {
             }
         }, 1000 / 30);
 
-        setInterval(() => {
+        this.world.setStoppableInterval(() => {
             if (!this.energy == 0) {
                 this.playAnimation(this.IMAGES_SWIM);
             }
