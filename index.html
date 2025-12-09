@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Document</title>
-    
+
     <script src="models/drawable-object.class.js"></script>
     <script src="models/movable-object.class.js"></script>
     <script src="models/status-bar.class.js"></script>
@@ -25,12 +26,40 @@
 
 </head>
 
-<body onload="init()">
+<body> 
 
     <h1>Sharkie</h1>
 
-    <canvas id="canvas" width="720" height="480">
-    </canvas>
-    
+
+    <div id="canvas-container">
+        <canvas id="canvas" width="720" height="480">
+        </canvas>
+
+        <div id="overlay-start-screen" class="canvas-overlay-start start-bg">
+            <h2>SHARKIES ADVENTURE</h2>
+            <div class="button-start-container">
+                <button onclick="startGame()" class="buttons">START</button>
+                <button class="buttons">CONTROLS</button>
+            </div>
+        </div>
+
+        <div id="overlay-boss-dead" class="canvas-overlay you-win-bg hidden">
+            <!-- <img src="x" alt="Game Over"> -->
+            <div class="button-container">
+                <button onclick="restartGame()" class="buttons">PLAY AGAIN</button>
+                <button onclick="goToMenu()" class="buttons">MENU</button>
+            </div>
+        </div>
+
+        <div id="overlay-player-dead" class="canvas-overlay game-over-overlay hidden">
+            <div class="button-container">
+                <button onclick="restartGame()" class="buttons">TRY AGAIN</button>
+                <button onclick="goToMenu()" class="buttons">MENU</button>
+            </div>
+            <img class="game-over-title" src="img/6.Botones/Tittles/Game Over/Recurso 12.png" alt="Game Over">
+        </div>
+    </div>
+
 </body>
+
 </html>

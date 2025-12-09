@@ -115,11 +115,4 @@ class Pufferfish extends MovableObject {
             ctx.stroke();
         }
     }
-
-    // animate() {
-    //     setInterval(() => {
-    //         this.x -= 0.4;
-    //     }, 1000 / 60);
-    // }
-
 }

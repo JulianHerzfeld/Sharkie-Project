@@ -1,6 +1,6 @@
 class World {
     character = new Character();
-    level = level1;
+    level;
     canvas;
     ctx;
     keyboard;
@@ -15,10 +15,11 @@ class World {
 
 
 
-    constructor(canvas, keyboard) {
+    constructor(canvas, keyboard, level1) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
+        this.level = level1
         this.generateBackground();
         this.generateStatusBar();
         this.draw();
@@ -35,8 +36,27 @@ class World {
     }
 
 
-    stopGame() {
+    stopGame() {                                                                    //hier weiter machen. endscreen und try again.
         this.intervalIds.forEach(clearInterval);
+        this.intervalIds = [];
+
+        setTimeout(() => {
+            if (this.drawRequestId) {
+                cancelAnimationFrame(this.drawRequestId);
+                this.drawRequestId = null;
+            }
+
+            this.stopDrawing = true;
+            gameStarted = false;
+
+
+            if (this.character.energy <= 0) {
+                document.getElementById('overlay-player-dead').classList.remove("hidden");
+            }
+            if (this.endboss && this.endboss.energy <= 0) {
+                document.getElementById('overlay-boss-dead').classList.remove("hidden");
+            }
+        }, 2000);
     }
 
 
@@ -348,6 +368,8 @@ class World {
 
 
     draw() {
+        // if (this.stopDrawing) return;
+
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         this.ctx.translate(this.camera_x, 0);
@@ -364,10 +386,17 @@ class World {
         this.drawStatusBar();
 
 
-        let self = this;
-        requestAnimationFrame(function () {
-            self.draw();
-        });
+        // let self = this;
+        // requestAnimationFrame(function () {
+        //     self.draw();
+        // });
+        this.drawRequestId = requestAnimationFrame(() => this.draw());
+    }
+
+
+    startDraw() {
+        this.stopDrawing = false;
+        this.draw();
     }
 
 

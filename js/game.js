@@ -1,14 +1,43 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let gameStarted = false;
 
 
 function init() {
     canvas = document.getElementById('canvas');
-    world = new World(canvas, keyboard);
+    world = new World(canvas, keyboard, createLevel1());
+    document.getElementById('overlay-start-screen').classList.add('hidden');
+    // world.startDraw();
 
     console.log('my character is', world.character);
+}
 
+
+function startGame() {
+    if (gameStarted) return;
+    gameStarted = true;
+    world = null;
+    document.getElementById('overlay-start-screen').classList.add('hidden');
+    init();
+}
+
+
+function restartGame() {
+    // world.stopGame();
+    world = null;
+    console.log(world);
+    
+    document.getElementById('overlay-boss-dead').classList.add('hidden');
+    document.getElementById('overlay-player-dead').classList.add('hidden');
+    init();
+}
+
+
+function goToMenu() {
+    document.getElementById('overlay-boss-dead').classList.add('hidden');
+    document.getElementById('overlay-player-dead').classList.add('hidden');
+    document.getElementById('overlay-start-screen').classList.remove('hidden');
 }
 
 

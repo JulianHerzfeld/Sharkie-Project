@@ -1,9 +1,120 @@
+@font-face {
+    font-family: 'Luckiest';
+    src: url('img/5.Font/Luckiest_Guy/LuckiestGuy-Regular.ttf') format('truetype');
+}
+
 body {
+    margin: 0;
+    height: 100vh;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
+    font-family: 'Luckiest';
+}
+
+h1 {
+    position: absolute;
+    top: 100px;
+}
+
+h2 {
+    display: flex;
+    justify-content: center;
+    font-size: 40px;
+    color: rgb(8, 12, 247);
 }
 
 canvas {
     background-color: black;
+}
+
+/* #game-over-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+} */
+
+#canvas-container {
+    position: relative;
+}
+
+.canvas-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 99%;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    z-index: 10;
+}
+
+.canvas-overlay-start {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 99%;
+    background-image: url('img/3. Background/Mesa de trabajo 1.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+.you-win-bg {
+    background: none;
+    background-image: url('img/6.Botones/Tittles/You win/Mesa de trabajo 1.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+.hidden {
+    display: none;
+}
+
+.button-start-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 140px;
+    gap: 20px;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 100px;
+    gap: 20px;
+}
+
+.buttons {
+    width: 180px;
+    height: 40px;
+    font-size: 20px;
+    font-family: 'Luckiest';
+}
+
+.buttons:hover {
+    cursor: pointer;
+}
+
+.game-over-overlay {
+    flex-direction: column;
+    align-items: center;
+    justify-content: unset;
+    gap: 70px;
+}
+
+.game-over-title {
+    width: 300px;
+    height: 50px;
 }

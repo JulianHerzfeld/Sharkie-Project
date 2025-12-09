@@ -41,10 +41,10 @@ class MovableObject extends DrawableObject {
 
 
     die() {
-        this.energy = 0;
+        // this.energy = 0;
         let i = 0
 
-        let interval = setInterval(() => {  
+        let interval = setInterval(() => {
             let images = this.IMAGES_DEAD;
             let path = images[i];
             this.img = this.imageCache[path];
@@ -55,7 +55,7 @@ class MovableObject extends DrawableObject {
             }
         }, 120);
 
-        setInterval(() => {
+        setTimeout(() => {
             this.remove = true;
         }, 1000);
     }
