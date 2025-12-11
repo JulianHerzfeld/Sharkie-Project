@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <title>Document</title>
 
+    <script src="models/audio-manager.class.js"></script>
+    <script src="js/audio.js"></script>
     <script src="models/drawable-object.class.js"></script>
     <script src="models/movable-object.class.js"></script>
     <script src="models/status-bar.class.js"></script>
@@ -26,7 +28,7 @@
 
 </head>
 
-<body> 
+<body onload="updateMuteButton()"> 
 
     <h1>Sharkie</h1>
 
@@ -57,6 +59,11 @@
                 <button onclick="goToMenu()" class="buttons">MENU</button>
             </div>
             <img class="game-over-title" src="img/6.Botones/Tittles/Game Over/Recurso 12.png" alt="Game Over">
+        </div>
+
+        <div class="mute-button-container">
+            <button onclick="changeMuteStatus()" id="mute-button" class="mute-button">x</button>
+            <button onclick="changeMuteStatus()" id="unmute-button" class="unmute-button hidden">o</button>
         </div>
     </div>
 

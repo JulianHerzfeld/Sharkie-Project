@@ -12,6 +12,7 @@ class World {
     shootableObjects = [];
     endbossSpawned = false;
     intervalIds = [];
+    // audioTest = new Audio('audio/background_music_2.mp3');
 
 
 
@@ -27,6 +28,7 @@ class World {
         this.run();
         this.assignWorldToAll(this.level.enemies);
         this.assignWorldToAll(this.level.collectableItem);
+        // audioBackground.play();
     }
 
 
@@ -36,9 +38,12 @@ class World {
     }
 
 
-    stopGame() {                                                                    //hier weiter machen. endscreen und try again.
+    stopGame() {                                                                    //hier weiter machen. sounds.
         this.intervalIds.forEach(clearInterval);
         this.intervalIds = [];
+        audioBackground.pause();
+        audioBackground.currentTime = 0;
+        gameOver = true;
 
         setTimeout(() => {
             if (this.drawRequestId) {
@@ -252,6 +257,7 @@ class World {
 
                         // Normale Gegner
                         if (enemy.energy <= 0) {
+                            audioEnemyHurt.play();
                             enemy.die();
                         }
                     }
@@ -323,13 +329,18 @@ class World {
             let distanceY = Math.abs(charCenterY - bossCenterY);
 
             // --- Angriffsbereich ---
-            if (distanceX < 250 && distanceY < 120) {
+            if (distanceX < 230 && distanceY < 95 && enemy.canAttack) {
                 enemy.playAttack();
+                enemy.canAttack = false;
+
+                setTimeout(() => {
+                    enemy.canAttack = true;
+                }, enemy.attackCooldown);
             }
         });
     }
 
-
+// breite boss = 320, höhe boss = 125.
     characterCenterX() {
         return this.character.x + this.character.offset.left
             + (this.character.width - this.character.offset.left - this.character.offset.right) / 2;
@@ -343,8 +354,8 @@ class World {
 
 
     endbossCenterX(enemy) {
-        return enemy.x + enemy.offset.left
-            + (enemy.width - enemy.offset.left - enemy.offset.right) / 2;
+        return enemy.x + enemy.offset.left - 15
+            + 315 / 2;
     }
 
 

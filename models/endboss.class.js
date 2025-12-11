@@ -72,6 +72,8 @@ class Endboss extends MovableObject {
     speed = 10;
     energy = 100;
     currentAnimationInterval = null;
+    canAttack = true;
+    attackCooldown = 1200;
 
 
     constructor(x, y) {
@@ -94,13 +96,12 @@ class Endboss extends MovableObject {
             if (this.isDead()) return;
             if (this.isHurtAnimationRunning) return;
             if (this.isFinalDead) return;
+            if (this.world && this.world.character) {
+                this.moveTowards(this.world.character);
+            }
             if (this.isSpawned && !this.isAttacking) {                       // nicht schwimmen wenn hurt animation läuft. fehlt noch.
 
                 this.playAnimation(this.IMAGES_SWIM);
-
-                if (this.world && this.world.character) {
-                    this.moveTowards(this.world.character);
-                }
             }
         }, 135);
     }
@@ -137,6 +138,7 @@ class Endboss extends MovableObject {
         this.stopCurrentAnimation();
         this.isHurtAnimationRunning = true;
         this.currentImage = 0;
+        audioBossHurt.play();
 
         let i = 0;
         let interval = setInterval(() => {
@@ -174,6 +176,7 @@ class Endboss extends MovableObject {
             }
         }, 120);
         this.world.stopGame();
+        audioGameWin.play();
     }
 
 
@@ -209,6 +212,7 @@ class Endboss extends MovableObject {
         this.isAttacking = true;
         this.currentImage = 0;
 
+
         let i = 0;
 
         this.currentAnimationInterval = setInterval(() => {
@@ -216,13 +220,14 @@ class Endboss extends MovableObject {
             let path = images[i];
             this.img = this.imageCache[path];
             i++;
+            audioBossAttack.play();
 
             // Animation fertig?
             if (i >= images.length) {
                 this.stopCurrentAnimation();
                 this.isAttacking = false;
             }
-        }, 80);
+        }, 120);
     }
 
 

@@ -143,19 +143,23 @@ class Character extends MovableObject {
             if (this.world.keyboard.LEFT && this.x > -600 && !this.isAttacking) {
                 this.moveLeft();
                 this.otherDirection = true;
+                audioCharacterMove.play();
             }
 
             if (this.world.keyboard.RIGHT && this.x < 1440 && !this.isAttacking) {  // 7200 bei 11 background wiederholungen.
                 this.moveRight();
                 this.otherDirection = false;
+                audioCharacterMove.play();
             }
 
             if (this.world.keyboard.UP && this.y > -80 && !this.isAttacking) {
                 this.moveUp();
+                audioCharacterMove.play();
             }
 
             if (this.world.keyboard.DOWN && this.y < 310 && !this.isAttacking) {
                 this.moveDown();
+                audioCharacterMove.play();
             }
 
             if (this.x > 1040) {      // 6800  bei 11 background wiederholungen
@@ -174,6 +178,7 @@ class Character extends MovableObject {
             }
             else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
+                // audioCharacterHurt.play();
             }
             else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN) {
                 if (!this.isAttacking){
@@ -236,7 +241,10 @@ class Character extends MovableObject {
                 clearInterval(interval);
                 this.isAttacking = false;
 
-                if (onFinish) onFinish();  // Bubble schießen
+                if (onFinish) {
+                    onFinish();
+                    audioCharacterAttack.play();
+                };  // Bubble schießen
             }
         }, 80);
     }
@@ -264,6 +272,7 @@ class Character extends MovableObject {
             }
         }, 120);
         this.world.stopGame();
+        audioGameLose.play();
     }
 
 
