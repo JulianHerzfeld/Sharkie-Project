@@ -21,8 +21,8 @@ class Coins extends MovableObject {
     constructor(x, y, type = 'coin') {
         super().loadImage('img/4. Marcadores/1. Coins/1.png');
         this.loadImages(this.IMAGES_COINS);
-        this.x = x;
-        this.y = y;
+        this.x = x + Math.random() * 500;
+        this.y = y + Math.random() * 400;
         this.height = 40;
         this.width = 40;
         this.type = type;

@@ -88,7 +88,7 @@ class Character extends MovableObject {
         'img/1.Sharkie/4.Attack/Bubble trap/For Whale/8.png'
     ];
     world;
-    speed = 8;
+    speed = 4;
     offset = {
         top: 100,       // y.+ 
         bottom: 150,    // height.-
@@ -99,6 +99,8 @@ class Character extends MovableObject {
     isAttacking = false;
     canShoot = true;
     shootCooldown = 1500;
+    canHurt = true;
+    hurtCooldown = 1000;
 
 
     constructor() {
@@ -146,7 +148,7 @@ class Character extends MovableObject {
                 audioCharacterMove.play();
             }
 
-            if (this.world.keyboard.RIGHT && this.x < 1440 && !this.isAttacking) {  // 7200 bei 11 background wiederholungen.
+            if (this.world.keyboard.RIGHT && this.x < 2880 && !this.isAttacking) {  // 7200 bei 11 background wiederholungen. //1400 zum testen. //4  = 2880.
                 this.moveRight();
                 this.otherDirection = false;
                 audioCharacterMove.play();
@@ -162,8 +164,8 @@ class Character extends MovableObject {
                 audioCharacterMove.play();
             }
 
-            if (this.x > 1040) {      // 6800  bei 11 background wiederholungen
-                this.world.camera_x = -940;  // damit die kamera am ende stehen bleibt aber der charakter noch bis zum rand kann. bei 11 background wiederholungen -6700
+            if (this.x > 2480) {      // 6800  bei 11 background wiederholungen  //zum testen 1040.
+                this.world.camera_x = -2380;  // damit die kamera am ende stehen bleibt aber der charakter noch bis zum rand kann. bei 11 background wiederholungen -6700
             } else {
                 this.world.camera_x = -this.x + 100;
             }
@@ -176,7 +178,7 @@ class Character extends MovableObject {
             if (this.isDead()) {
                 this.die();
             }
-            else if (this.isHurt()) {
+            else if (this.isHurt() && !this.isAttacking) {
                 this.playAnimation(this.IMAGES_HURT);
                 // audioCharacterHurt.play();
             }

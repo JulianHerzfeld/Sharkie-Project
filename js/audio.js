@@ -27,8 +27,8 @@ audioManager.addSound(audioBossHurt);
 let audioBossAttack = new Audio('audio/boss_attack_2.mp3');
 audioManager.addSound(audioBossAttack);
 
-let audioTest = new Audio('audio/bubble_pop.mp3');
-audioManager.addSound(audioTest);
+let bossSpawn = new Audio('audio/boss_spawn.mp3');
+audioManager.addSound(bossSpawn);
 
 
 function updateMuteButton() {

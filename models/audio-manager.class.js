@@ -5,7 +5,7 @@ class AudioManager {
 
     constructor() {
         this.sounds = [];
-        this.volume = 0.5;
+        this.volume = 0.2;
 
         const savedMute = localStorage.getItem('soundMuted');
         this.isMuted = savedMute === 'true';

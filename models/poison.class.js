@@ -24,7 +24,7 @@ class Poison extends MovableObject {
     constructor(x, y, type = 'poison') {
         super().loadImage('img/4. Marcadores/Posión/Animada/1.png');
         this.loadImages(this.IMAGES_POISON);
-        this.x = x;
+        this.x = x + Math.random() * 500;
         this.y = y;
         this.height = 60;
         this.width = 50;

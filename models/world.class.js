@@ -69,7 +69,7 @@ class World {
         this.statusBarLife = new StatusBar(this.statusBarLifeImages(), 10, -10, 100);
         this.statusBarPoison = new StatusBar(this.statusBarPoisonImages(), 10, 20, 0);
         this.statusBarCoins = new StatusBar(this.statusBarCoinsImages(), 10, 50, 0);
-        this.statusBarLifeBoss = new StatusBar(this.statusBarLifeBossImages(), 560, -10, 100);
+        this.statusBarLifeBoss = new StatusBar(this.statusBarLifeBossImages(), 540, -10, 100);
         this.statusBarLifeBoss.hide = true;
     }
 
@@ -123,7 +123,7 @@ class World {
 
 
     generateBackground() {
-        let repeat = 11;
+        let repeat = 5;
 
         for (let bgPosition = -1; bgPosition < repeat; bgPosition++) {
             let offset = bgPosition * 720;
@@ -209,9 +209,14 @@ class World {
 
     collisionWithEnemy() {
         this.level.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy)) {
-                this.character.hit(5);
+            if (this.character.isColliding(enemy) && this.character.canHurt) {
+                this.character.hit(20);
                 this.statusBarLife.setPercentage(this.character.energy);
+                this.character.canHurt = false;
+                audioCharacterHurt.play();
+                setTimeout(() => {
+                    this.character.canHurt = true;
+                }, this.character.hurtCooldown);
                 console.log('Collision with Character, energy ', this.character.energy);
             }
         });
@@ -292,11 +297,12 @@ class World {
     checkSpawnEndboss() {
         if (this.endbossSpawned) return;
 
-        if (this.character.x > 800) {                      // anpassen für endboss wann er spawnt.
+        if (this.character.x > 2300) {                      // anpassen für endboss wann er spawnt.
 
             this.endbossSpawned = true;
+            bossSpawn.play();
 
-            this.endboss = new Endboss(1000, 0);            // Position für Boss.
+            this.endboss = new Endboss(2700, 0);            // Position für Boss.
             this.endboss.world = this;
             if (this.endboss.animate) this.endboss.animate();
 
@@ -369,11 +375,17 @@ class World {
         if (item.type === 'coin') {
             this.character.coinsAmount += 20;
             this.statusBarCoins.setPercentage(this.character.coinsAmount);
+            if (this.character.coinsAmount >= 100) {
+                this.character.coinsAmount = 100;
+            }
         }
 
         if (item.type === 'poison') {
             this.character.poisonAmount += 20;
             this.statusBarPoison.setPercentage(this.character.poisonAmount);
+            if (this.character.poisonAmount >= 100) {
+                this.character.poisonAmount = 100;
+            }
         }
     }
 

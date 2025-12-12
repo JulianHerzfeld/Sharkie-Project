@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Document</title>
+    <link rel="icon" type="image/x-icon" href="icons/favicon-32x32.png">
 
     <script src="models/audio-manager.class.js"></script>
     <script src="js/audio.js"></script>
@@ -62,8 +63,8 @@
         </div>
 
         <div class="mute-button-container">
-            <button onclick="changeMuteStatus()" id="mute-button" class="mute-button">x</button>
-            <button onclick="changeMuteStatus()" id="unmute-button" class="unmute-button hidden">o</button>
+            <button onclick="changeMuteStatus()" id="mute-button" class="mute-button"><img class="volume" src="icons/volume_on.png" alt="Volume on"></button>
+            <button onclick="changeMuteStatus()" id="unmute-button" class="mute-button hidden"><img class="volume" src="icons/volume_off.png" alt="Volume off"></button>
         </div>
     </div>
 
