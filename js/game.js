@@ -20,6 +20,7 @@ function init() {
     world = new World(canvas, keyboard, createLevel1());
     document.getElementById('overlay-start-screen').classList.add('hidden');
     // world.startDraw();
+    updateMobileUi();
     gameOver = false;
 
     console.log('my character is', world.character);
@@ -62,7 +63,12 @@ function goToMenu() {
     document.getElementById('overlay-boss-dead').classList.add('hidden');
     document.getElementById('overlay-player-dead').classList.add('hidden');
     document.getElementById('overlay-start-screen').classList.remove('hidden');
+    document.getElementById('mobile-controls').classList.add('hidden');
 }
+
+
+window.addEventListener('resize', updateMobileUi);
+window.addEventListener('orientationchange', updateMobileUi);
 
 
 window.addEventListener("keydown", (e) => {
@@ -122,3 +128,10 @@ window.addEventListener("keyup", (e) => {
 
 
 
+// als nächstes full screen hinzufügen, 
+// button style anpassen 
+// responsiv machen,                                 // erledigt ?!.
+// handy steuerung hinzufügen,                       // erledigt.  nochmal consolen fehler beobachten.
+// controls beschreibung hinzufügen,
+// impressum hinzufügen,
+// neues favicon suchen,

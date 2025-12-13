@@ -7,5 +7,64 @@ class Keyboard {
     D = false;
 
 
+    constructor() {
+        document.addEventListener('DOMContentLoaded', () => {
+            this.bindBtnPressEvent();
+        });
+    }
+
+
+
+    bindBtnPressEvent() {
+        document.getElementById('btnUp').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.UP = true;
+        }, { passive: false });
+
+        document.getElementById('btnUp').addEventListener('touchend', (e) => {
+            e.preventDefault();
+            this.UP = false;
+        }, { passive: false });
+
+        document.getElementById('btnLeft').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.LEFT = true;
+        }, { passive: false });
+
+        document.getElementById('btnLeft').addEventListener('touchend', (e) => {
+            e.preventDefault();
+            this.LEFT = false;
+        }, { passive: false });
+
+        document.getElementById('btnRight').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.RIGHT = true;
+        }, { passive: false });
+
+        document.getElementById('btnRight').addEventListener('touchend', (e) => {
+            e.preventDefault();
+            this.RIGHT = false;
+        }, { passive: false });
+
+        document.getElementById('btnDown').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.DOWN = true;
+        }, { passive: false });
+
+        document.getElementById('btnDown').addEventListener('touchend', (e) => {
+            e.preventDefault();
+            this.DOWN = false;
+        }, { passive: false });
+
+        document.getElementById('btnShoot').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.SPACE = true;
+        }, { passive: false });
+
+        document.getElementById('btnShoot').addEventListener('touchend', (e) => {
+            e.preventDefault();
+            this.SPACE = false;
+        }, { passive: false });
+    }
 
 }

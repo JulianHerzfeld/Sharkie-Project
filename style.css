@@ -19,7 +19,7 @@ body {
 
 h1 {
     position: absolute;
-    top: 100px;
+    top: 30px;
     color: #FFFFFF;
 }
 
@@ -32,6 +32,7 @@ h2 {
 
 canvas {
     background-color: black;
+    display: block;
 }
 
 /* #game-over-screen {
@@ -53,26 +54,33 @@ canvas {
 
 .canvas-overlay {
     position: absolute;
+    /* display: flex;
+    flex-direction: column;
+    justify-content: space-around; */
     top: 0;
     left: 0;
     width: 100%;
-    height: 99%;
-    background: rgba(0,0,0,0.3);
-    display: flex;
-    justify-content: center;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    /* display: flex;
+    justify-content: center; */
     /* align-items: center; */
     z-index: 10;
 }
 
 .canvas-overlay-start {
     position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
     top: 0;
     left: 0;
     width: 100%;
-    height: 99%;
+    height: 100%;
     background-image: url('img/3. Background/Mesa de trabajo 1.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
+    z-index: 12;
 }
 
 .you-win-bg {
@@ -82,22 +90,19 @@ canvas {
     background-repeat: no-repeat;
 }
 
-.hidden {
-    display: none;
-}
-
 .button-start-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 140px;
+    /* margin-top: 140px; */
+    padding-bottom: 60px;
     gap: 20px;
 }
 
 .button-container {
     display: flex;
     flex-direction: column;
-    margin-top: 100px;
+    /* margin-top: 100px; */
     gap: 20px;
 }
 
@@ -112,11 +117,21 @@ canvas {
     cursor: pointer;
 }
 
+.buttons-victory {
+    padding-top: 30px;
+}
+
+.game-win-overlay {
+    display: flex;
+    justify-content: center;
+}
+
 .game-over-overlay {
+    display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: unset;
-    gap: 70px;
+    justify-content: space-evenly;
+    /* gap: 70px; */
 }
 
 .game-over-title {
@@ -128,14 +143,17 @@ canvas {
     position: absolute;
     top: 0;
     right: 0;
-    z-index: 11;
+    z-index: 13;
     margin-bottom: 4px;
 }
 
 .mute-button {
     border-width: unset;
     border-style: unset;
-    background-color: unset;
+    padding-inline: unset;
+    padding-block: unset;
+    display: flex;
+    background-color: rgba(255, 255, 255, 0.4);
 }
 
 .mute-button:hover {
@@ -145,4 +163,160 @@ canvas {
 .volume {
     width: 24px;
     height: 25px;
+}
+
+.panel-mobile {
+    display: flex;
+}
+
+.move-button-mobile {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    display: grid;
+    grid-template-columns: 40px 40px 40px;
+    grid-template-rows: 40px 40px 40px;
+    gap: 3px;
+}
+
+.move-button-mobile button, .action-button-mobile button {
+    border-width: unset;
+    border-style: unset;
+    padding-inline: unset;
+    padding-block: unset;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    touch-action: none;
+}
+
+.move-button-mobile button:hover, .action-button-mobile button:hover {
+    cursor: pointer;
+}
+
+.action-button-mobile {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+}
+
+/* .action-button-mobile button {
+    border-width: unset;
+    border-style: unset;
+    padding-inline: unset;
+    padding-block: unset;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} */
+
+.up {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.left {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.right {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+.down {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+.rotate-message {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 25px;
+    text-align: center;
+    color: #FFFFFF;
+    background-color: #000000;
+    z-index: 20;
+}
+
+.rotate-icon {
+    width: 100px;
+}
+
+.hidden {
+    display: none;
+}
+
+@media only screen and (max-width: 720px) {
+    canvas {
+        width: 100%;
+    }
+
+    #canvas-container {
+        width: 100vw;
+    }
+
+    h1 {
+        display: none;
+    }
+}
+
+@media (max-height: 700px) {
+    h1 {
+        display: none;
+    }
+}
+
+@media only screen and (max-height: 480px) {
+    canvas {
+        height: 100%;
+    }
+
+    #canvas-container {
+        height: 100vh;
+    }
+}
+
+@media (max-width: 420px) {
+    .button-start-container {
+        padding-bottom: 30px;
+    }
+
+    h2 {
+        font-size: 25px;
+    }
+
+    .buttons {
+        width: 105px;
+        height: 25px;
+        font-size: 16px;
+    }
+
+    .button-container {
+        gap: 10px;
+    }
+
+    .game-over-title {
+        width: 200px;
+        height: 30px;
+    }
+
+    .rotate-message {
+        gap: 10px;
+    }
+
+    .rotate-icon {
+        width: 60px;
+    }
 }
