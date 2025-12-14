@@ -22,7 +22,6 @@ class Keyboard {
         }, { passive: false });
 
         document.getElementById('btnUp').addEventListener('touchend', (e) => {
-            e.preventDefault();
             this.UP = false;
         }, { passive: false });
 
@@ -32,7 +31,6 @@ class Keyboard {
         }, { passive: false });
 
         document.getElementById('btnLeft').addEventListener('touchend', (e) => {
-            e.preventDefault();
             this.LEFT = false;
         }, { passive: false });
 
@@ -42,7 +40,6 @@ class Keyboard {
         }, { passive: false });
 
         document.getElementById('btnRight').addEventListener('touchend', (e) => {
-            e.preventDefault();
             this.RIGHT = false;
         }, { passive: false });
 
@@ -52,7 +49,6 @@ class Keyboard {
         }, { passive: false });
 
         document.getElementById('btnDown').addEventListener('touchend', (e) => {
-            e.preventDefault();
             this.DOWN = false;
         }, { passive: false });
 
@@ -62,8 +58,11 @@ class Keyboard {
         }, { passive: false });
 
         document.getElementById('btnShoot').addEventListener('touchend', (e) => {
-            e.preventDefault();
             this.SPACE = false;
+        }, { passive: false });
+
+        document.addEventListener('touchmove', e => {
+            e.preventDefault();
         }, { passive: false });
     }
 

@@ -1,0 +1,18 @@
+.back-to-main {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    border-width: unset;
+    border-style: unset;
+    padding-inline: unset;
+    padding-block: unset;
+}
+
+.back-to-main:hover {
+    cursor: pointer;
+    scale: 1.2;
+}
+
+.back-to-main-img {
+    width: 30px;
+}

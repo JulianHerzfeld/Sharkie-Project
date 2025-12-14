@@ -3,6 +3,7 @@ let world;
 let keyboard = new Keyboard();
 let gameStarted = false;
 let gameOver = true;
+let isFullscreen = false;
 // let audioBackground = new Audio('audio/background_music_2.mp3');
 // let audioCharacterMove = new Audio('audio/sharkie_swim.mp3');
 // let audioCharacterAttack = new Audio('audio/sharkie_attack.mp3');
@@ -67,6 +68,47 @@ function goToMenu() {
 }
 
 
+function exitRunningGame() {
+    world.stopGame();
+    goToMenu();
+}
+
+
+function openControlOverlay() {
+    document.getElementById('control-overlay').classList.remove('hidden');
+}
+
+
+function closeControlOverlay() {
+    document.getElementById('control-overlay').classList.add('hidden');
+}
+
+
+function updateInits() {
+    updateMuteButton();
+    setGameMenuEvents();
+}
+
+
+function setGameMenuEvents() {
+    const menuToggle = document.getElementById('game-menu-toggle');
+    const gameMenu = document.getElementById('game-menu');
+
+    menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        gameMenu.classList.toggle('hidden');
+    });
+
+    gameMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+
+    document.addEventListener('click', () => {
+        gameMenu.classList.add('hidden');
+    });
+}
+
+
 window.addEventListener('resize', updateMobileUi);
 window.addEventListener('orientationchange', updateMobileUi);
 
@@ -128,10 +170,15 @@ window.addEventListener("keyup", (e) => {
 
 
 
-// als nächstes full screen hinzufügen, 
-// button style anpassen 
+// als nächstes full screen hinzufügen,             // lieber lassen sieht nicht gut aus.
+// button style anpassen
 // responsiv machen,                                 // erledigt ?!.
-// handy steuerung hinzufügen,                       // erledigt.  nochmal consolen fehler beobachten.
-// controls beschreibung hinzufügen,
-// impressum hinzufügen,
-// neues favicon suchen,
+// handy steuerung hinzufügen,                       // erledigt. => nochmal consolen fehler beobachten. => erledigt.
+// controls beschreibung hinzufügen,                 // erledigt.
+// impressum hinzufügen,                             // fehlt noch inhalt.
+// neues favicon suchen,                             // erledigt.
+// coins und poison sound einfügen,
+// code aufräumen,
+// code dokumentieren,
+// sharkie idle time erhöhen,
+// bubble max range geben,

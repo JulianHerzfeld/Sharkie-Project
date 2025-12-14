@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Document</title>
-    <link rel="icon" type="image/x-icon" href="icons/favicon-32x32.png">
+    <link rel="icon" type="image/x-icon" href="icons/shark_favicon.png">
 
     <script src="js/mobile.js"></script>
     <script src="models/audio-manager.class.js"></script>
@@ -30,7 +30,7 @@
 
 </head>
 
-<body onload="updateMuteButton()">
+<body onload="updateInits()">
 
     <h1>Sharkie</h1>
 
@@ -43,7 +43,7 @@
             <h2>SHARKIES ADVENTURE</h2>
             <div class="button-start-container">
                 <button onclick="startGame()" class="buttons">START</button>
-                <button class="buttons">CONTROLS</button>
+                <button onclick="openControlOverlay()" class="buttons">CONTROLS</button>
             </div>
         </div>
 
@@ -70,32 +70,43 @@
                     src="icons/volume_off.png" alt="Volume off"></button>
         </div>
 
+        <div class="game-menu-container">
+            <button id="game-menu-toggle" class="game-menu-button">
+                <img src="icons/burger_menu.svg" alt="Menu">
+            </button>
+
+            <div id="game-menu" class="game-menu hidden">
+                <button onclick="exitRunningGame()" class="game-menu-item">MENU</button>
+                <button onclick="window.location.href='html/impressum.html';" class="game-menu-item">IMPRESSUM</button>
+            </div>
+        </div>
+
         <div id="mobile-controls" class="panel-mobile hidden">
             <div class="move-button-mobile">
-                <button id="btnUp" class="up"><svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960"
-                        width="40px" fill="#000000">
+                <button id="btnUp" class="up"><svg xmlns="http://www.w3.org/2000/svg" height="40px"
+                        viewBox="0 -960 960 960" width="40px" fill="#000000">
                         <path
                             d="M446.67-328h66.66v-177.33L584-434.67l46.67-46.66L480-632 329.33-481.33 376-434.67l70.67-70.66V-328ZM480-80q-82.33 0-155.33-31.5-73-31.5-127.34-85.83Q143-251.67 111.5-324.67T80-480q0-83 31.5-156t85.83-127q54.34-54 127.34-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82.33-31.5 155.33-31.5 73-85.5 127.34Q709-143 636-111.5T480-80Zm0-66.67q139.33 0 236.33-97.33t97-236q0-139.33-97-236.33t-236.33-97q-138.67 0-236 97-97.33 97-97.33 236.33 0 138.67 97.33 236 97.33 97.33 236 97.33ZM480-480Z" />
                     </svg></button>
-                <button id="btnLeft" class="left"><svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960"
-                        width="40px" fill="#000000">
+                <button id="btnLeft" class="left"><svg xmlns="http://www.w3.org/2000/svg" height="40px"
+                        viewBox="0 -960 960 960" width="40px" fill="#000000">
                         <path
                             d="M480-329.33 526.67-376 456-446.67h177.33v-66.66H456L526.67-584 480-630.67 329.33-480 480-329.33ZM480-80q-82.33 0-155.33-31.5-73-31.5-127.34-85.83Q143-251.67 111.5-324.67T80-480q0-83 31.5-156t85.83-127q54.34-54 127.34-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82.33-31.5 155.33-31.5 73-85.5 127.34Q709-143 636-111.5T480-80Zm0-66.67q139.33 0 236.33-97.33t97-236q0-139.33-97-236.33t-236.33-97q-138.67 0-236 97-97.33 97-97.33 236.33 0 138.67 97.33 236 97.33 97.33 236 97.33ZM480-480Z" />
                     </svg></button>
-                <button id="btnRight" class="right"><svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960"
-                        width="40px" fill="#000000">
+                <button id="btnRight" class="right"><svg xmlns="http://www.w3.org/2000/svg" height="40px"
+                        viewBox="0 -960 960 960" width="40px" fill="#000000">
                         <path
                             d="M480-329.33 630.67-480 480-630.67 433.33-584 504-513.33H326.67v66.66H504L433.33-376 480-329.33ZM480-80q-82.33 0-155.33-31.5-73-31.5-127.34-85.83Q143-251.67 111.5-324.67T80-480q0-83 31.5-156t85.83-127q54.34-54 127.34-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82.33-31.5 155.33-31.5 73-85.5 127.34Q709-143 636-111.5T480-80Zm0-66.67q139.33 0 236.33-97.33t97-236q0-139.33-97-236.33t-236.33-97q-138.67 0-236 97-97.33 97-97.33 236.33 0 138.67 97.33 236 97.33 97.33 236 97.33ZM480-480Z" />
                     </svg></button>
-                <button id="btnDown" class="down"><svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960"
-                        width="40px" fill="#000000">
+                <button id="btnDown" class="down"><svg xmlns="http://www.w3.org/2000/svg" height="40px"
+                        viewBox="0 -960 960 960" width="40px" fill="#000000">
                         <path
                             d="m480-328 150.67-150.67L584-525.33l-70.67 70.66V-632h-66.66v177.33L376-525.33l-46.67 46.66L480-328Zm0 248q-82.33 0-155.33-31.5-73-31.5-127.34-85.83Q143-251.67 111.5-324.67T80-480q0-83 31.5-156t85.83-127q54.34-54 127.34-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82.33-31.5 155.33-31.5 73-85.5 127.34Q709-143 636-111.5T480-80Zm0-66.67q139.33 0 236.33-97.33t97-236q0-139.33-97-236.33t-236.33-97q-138.67 0-236 97-97.33 97-97.33 236.33 0 138.67 97.33 236 97.33 97.33 236 97.33ZM480-480Z" />
                     </svg></button>
             </div>
             <div class="action-button-mobile">
-                <button id="btnShoot"><svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px"
-                        fill="#000000">
+                <button id="btnShoot"><svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960"
+                        width="40px" fill="#000000">
                         <path
                             d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-66.67q139.58 0 236.46-96.87 96.87-96.88 96.87-236.46t-96.87-236.46Q619.58-813.33 480-813.33t-236.46 96.87Q146.67-619.58 146.67-480t96.87 236.46q96.88 96.87 236.46 96.87Zm0-93.33q-100 0-170-70t-70-170q0-100 70-170t170-70q100 0 170 70t70 170q0 100-70 170t-170 70Zm0-66.67q72 0 122.67-50.66Q653.33-408 653.33-480t-50.66-122.67Q552-653.33 480-653.33t-122.67 50.66Q306.67-552 306.67-480t50.66 122.67Q408-306.67 480-306.67Zm0-93.33q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Z" />
                     </svg></button>
@@ -106,7 +117,37 @@
             <img class="rotate-icon" src="icons/mobile_rotate.svg" alt="Rotate Mobile">
             <p>Please rotate your device to play</p>
         </div>
+
+        <div id="control-overlay" class="control-overlay-container hidden">
+            <div class="control-overlay-content">
+                <div class="control-overlay-close-button">
+                    <button onclick="closeControlOverlay()"><img class="control-overlay-close-img"
+                            src="icons/close_small.svg" alt=""></button>
+                </div>
+                <div class="control-overlay-headline">
+                    <p>SHARKIE INFORMATIONS</p>
+                </div>
+                <div class="control-shark">
+                    <img class="control-move-img" src="img/6.Botones/Key/arrow keys.png" alt="">
+                    <p>MOVE SHARK</p>
+                </div>
+                <div class="control-shark">
+                    <img class="control-attack-img" src="img/6.Botones/Key/Space Bar key.png" alt="">
+                    <p>ATTACK</p>
+                </div>
+                <div class="control-shark description">
+                    <p>DESCRIPTION:</p>
+                    <p>As a small shark, you face the dangers of the ocean, defeat hostile creatures, and use poison
+                        bottles to enhance your attacks. At the end, a formidable boss awaits, who will decide your
+                        fate.</p>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <footer class="footer-impressum">
+        <button onclick="window.location.href='html/impressum.html';" class="buttons">IMPRESSUM</button>
+    </footer>
 
 </body>
 
