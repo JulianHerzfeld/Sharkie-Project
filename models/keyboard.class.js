@@ -1,12 +1,30 @@
+/**
+ * Handles keyboard and touch input for controlling the character.
+ * Tracks the state of directional keys and the shoot key.
+ */
 class Keyboard {
+    /** @type {boolean} Whether the left key/button is pressed. */
     LEFT = false;
+
+    /** @type {boolean} Whether the right key/button is pressed. */
     RIGHT = false;
+
+    /** @type {boolean} Whether the up key/button is pressed. */
     UP = false;
+
+    /** @type {boolean} Whether the down key/button is pressed. */
     DOWN = false;
+
+    /** @type {boolean} Whether the shoot key/button (SPACE) is pressed. */
     SPACE = false;
+
+    /** @type {boolean} Optional key D (not used in current game). */
     D = false;
 
 
+    /**
+     * Initializes the Keyboard handler and binds touch events after DOM content is loaded.
+     */
     constructor() {
         document.addEventListener('DOMContentLoaded', () => {
             this.bindBtnPressEvent();
@@ -14,7 +32,10 @@ class Keyboard {
     }
 
 
-
+    /**
+     * Binds touch events for on-screen buttons to update key states.
+     * Handles touchstart and touchend for each directional and action button.
+     */
     bindBtnPressEvent() {
         document.getElementById('btnUp').addEventListener('touchstart', (e) => {
             e.preventDefault();
@@ -65,5 +86,4 @@ class Keyboard {
             e.preventDefault();
         }, { passive: false });
     }
-
 }

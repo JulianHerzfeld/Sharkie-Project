@@ -1,5 +1,10 @@
+/**
+ * Class representing collectible poison in the game.
+ * Extends MovableObject to inherit position, collision, and animation logic.
+ */
 class Poison extends MovableObject {
 
+    /** @type {string[]} Array of image paths for poison animation */
     IMAGES_POISON = [
         'img/4. Marcadores/Posión/Animada/1.png',
         'img/4. Marcadores/Posión/Animada/2.png',
@@ -11,16 +16,24 @@ class Poison extends MovableObject {
         'img/4. Marcadores/Posión/Animada/8.png'
     ];
 
+    /** @type {object} Collision offsets */
     offset = {
         top: 25,
         bottom: 27,
         left: 10,
         right: 20,
     }
+
+    /** @type {string} Type of collectible (default: 'poison') */
     type;
 
 
-
+    /**
+     * Creates a new poison instance at a given position.
+     * @param {number} x X-coordinate for the poison
+     * @param {number} y Y-coordinate for the poison
+     * @param {string} [type='poison'] Type of collectible
+     */
     constructor(x, y, type = 'poison') {
         super().loadImage('img/4. Marcadores/Posión/Animada/1.png');
         this.loadImages(this.IMAGES_POISON);
@@ -29,11 +42,13 @@ class Poison extends MovableObject {
         this.height = 60;
         this.width = 50;
         this.type = type;
-
-        // this.animate();
     }
 
 
+    /**
+     * Starts the poison animation loop.
+     * Loops through IMAGES_POISON at a fixed interval.
+     */
     animate() {
         this.world.setStoppableInterval(() => {
             this.playAnimation(this.IMAGES_POISON);

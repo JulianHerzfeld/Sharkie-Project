@@ -1,0 +1,162 @@
+.button-start-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 60px;
+    gap: 20px;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.buttons {
+    width: 180px;
+    height: 40px;
+    font-size: 20px;
+    font-family: 'Luckiest';
+    border-radius: 15px;
+    background-color: #7FFFE0;
+}
+
+.buttons:hover {
+    cursor: pointer;
+    box-shadow:0 2px 9px 5px rgba(0,0,0,0.8)
+}
+
+.buttons:active {
+    background-color: #00b688;
+}
+
+.buttons-victory {
+    padding-top: 30px;
+}
+
+.mute-button-container {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    z-index: 11;
+    margin-bottom: 4px;
+}
+
+.mute-button {
+    border-width: unset;
+    border-style: unset;
+    padding-inline: unset;
+    padding-block: unset;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.mute-button:hover {
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.game-menu-container {
+    position: absolute;
+    top: 36px;
+    right: 2px;
+    z-index: 10;
+}
+
+.move-button-mobile {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    display: grid;
+    grid-template-columns: 40px 40px 40px;
+    grid-template-rows: 40px 40px 40px;
+    gap: 3px;
+}
+
+.move-button-mobile button,
+.action-button-mobile button {
+    border-width: unset;
+    border-style: unset;
+    padding-inline: unset;
+    padding-block: unset;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    touch-action: none;
+}
+
+.move-button-mobile button:hover,
+.action-button-mobile button:hover {
+    cursor: pointer;
+}
+
+.action-button-mobile {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+}
+
+.up {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.left {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.right {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+.down {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+.control-overlay-close-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 10;
+}
+
+.control-overlay-close-button button {
+    border-width: unset;
+    border-style: unset;
+    padding-inline: unset;
+    padding-block: unset;
+    background-color: unset;
+}
+
+.game-menu-button {
+    border: none;
+    padding: 6px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    display: flex;
+}
+
+.game-menu-button:hover {
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.footer-impressum button {
+    border-width: unset;
+    border-style: unset;
+    padding-inline: unset;
+    padding-block: unset;
+}
+
+.back-to-main {
+    width: 100px;
+}
+
+.hidden {
+    display: none;
+}

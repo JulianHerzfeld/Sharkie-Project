@@ -1,8 +1,22 @@
+/**
+ * Class representing the main player character Sharkie.
+ * @extends MovableObject
+ */
 class Character extends MovableObject {
+
+    /** @type {number} Initial horizontal position */
     x = 0;
+
+    /** @type {number} Initial vertical position */
     y = 100;
+
+    /** @type {number} Character width */
     width = 180;
+
+    /** @type {number} Character height */
     height = 200;
+
+    /** @type {string[]} Swim animation frames */
     IMAGES_SWIM = [
         'img/1.Sharkie/3.Swim/1.png',
         'img/1.Sharkie/3.Swim/2.png',
@@ -11,6 +25,8 @@ class Character extends MovableObject {
         'img/1.Sharkie/3.Swim/5.png',
         'img/1.Sharkie/3.Swim/6.png'
     ];
+
+    /** @type {string[]} Death animation frames */
     IMAGES_DEAD = [
         'img/1.Sharkie/6.dead/1.Poisoned/1.png',
         'img/1.Sharkie/6.dead/1.Poisoned/2.png',
@@ -25,12 +41,16 @@ class Character extends MovableObject {
         'img/1.Sharkie/6.dead/1.Poisoned/11.png',
         'img/1.Sharkie/6.dead/1.Poisoned/12.png'
     ];
+
+    /** @type {string[]} Hurt animation frames */
     IMAGES_HURT = [
         'img/1.Sharkie/5.Hurt/1.Poisoned/1.png',
         'img/1.Sharkie/5.Hurt/1.Poisoned/2.png',
         'img/1.Sharkie/5.Hurt/1.Poisoned/3.png',
         'img/1.Sharkie/5.Hurt/1.Poisoned/4.png'
     ];
+
+    /** @type {string[]} Idle animation frames */
     IMAGES_IDLE = [
         'img/1.Sharkie/1.IDLE/1.png',
         'img/1.Sharkie/1.IDLE/2.png',
@@ -51,6 +71,8 @@ class Character extends MovableObject {
         'img/1.Sharkie/1.IDLE/17.png',
         'img/1.Sharkie/1.IDLE/18.png'
     ];
+
+    /** @type {string[]} Long idle animation frames */
     IMAGES_LONG_IDLE = [
         'img/1.Sharkie/2.Long_IDLE/i1.png',
         'img/1.Sharkie/2.Long_IDLE/I2.png',
@@ -67,6 +89,8 @@ class Character extends MovableObject {
         'img/1.Sharkie/2.Long_IDLE/I13.png',
         'img/1.Sharkie/2.Long_IDLE/I14.png'
     ];
+
+    /** @type {string[]} Regular attack animation frames */
     IMAGES_ATTACK = [
         'img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/1.png',
         'img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/2.png',
@@ -77,6 +101,8 @@ class Character extends MovableObject {
         'img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/7.png',
         'img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/8.png'
     ];
+
+    /** @type {string[]} Poison attack animation frames */
     IMAGES_POISON_ATTACK = [
         'img/1.Sharkie/4.Attack/Bubble trap/For Whale/1.png',
         'img/1.Sharkie/4.Attack/Bubble trap/For Whale/2.png',
@@ -87,22 +113,43 @@ class Character extends MovableObject {
         'img/1.Sharkie/4.Attack/Bubble trap/For Whale/7.png',
         'img/1.Sharkie/4.Attack/Bubble trap/For Whale/8.png'
     ];
+
+    /** @type {World} Reference to the game world */
     world;
+
+    /** @type {number} Movement speed */
     speed = 4;
+
+    /** @type {Object} Collision offsets */
     offset = {
-        top: 100,       // y.+ 
-        bottom: 150,    // height.-
-        left: 36,       // x.+
-        right: 70      // width.-
+        top: 100,
+        bottom: 150,
+        left: 36,
+        right: 70
     }
+
+    /** @type {number} Timestamp of last movement */
     lastMoveTime = Date.now();
+
+    /** @type {boolean} Whether the character is currently attacking */
     isAttacking = false;
+
+    /** @type {boolean} Whether the character can shoot */
     canShoot = true;
+
+    /** @type {number} Shoot cooldown in milliseconds */
     shootCooldown = 1500;
+
+    /** @type {boolean} Whether the character can be hurt */
     canHurt = true;
+
+    /** @type {number} Hurt cooldown in milliseconds */
     hurtCooldown = 1000;
 
 
+    /**
+     * Create the main character and load all animations.
+     */
     constructor() {
         super();
         this.loadImage('img/1.Sharkie/3.Swim/1.png');
@@ -113,24 +160,13 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_LONG_IDLE);
         this.loadImages(this.IMAGES_ATTACK);
         this.loadImages(this.IMAGES_POISON_ATTACK);
-
-        // this.animate();
     }
 
 
-    // animate() {
-    //     setInterval(() => {
-    //         let i = this.currentImage % this.IMAGES_SWIM.length;
-    //         let path = this.IMAGES_SWIM[i];
-    //         this.img = this.imageCache[path];
-    //         this.currentImage++;
-    //     }, 130);
-    // }
-
-
-
+    /**
+     * Animate the character's movement and idle state.
+     */
     animate() {
-
         this.world.setStoppableInterval(() => {
             const moving = this.world.keyboard.LEFT ||
                 this.world.keyboard.RIGHT ||
@@ -148,7 +184,7 @@ class Character extends MovableObject {
                 audioCharacterMove.play();
             }
 
-            if (this.world.keyboard.RIGHT && this.x < 2880 && !this.isAttacking) {  // 7200 bei 11 background wiederholungen. //1400 zum testen. //4  = 2880.
+            if (this.world.keyboard.RIGHT && this.x < 2880 && !this.isAttacking) {
                 this.moveRight();
                 this.otherDirection = false;
                 audioCharacterMove.play();
@@ -164,8 +200,8 @@ class Character extends MovableObject {
                 audioCharacterMove.play();
             }
 
-            if (this.x > 2480) {      // 6800  bei 11 background wiederholungen  //zum testen 1040.
-                this.world.camera_x = -2380;  // damit die kamera am ende stehen bleibt aber der charakter noch bis zum rand kann. bei 11 background wiederholungen -6700
+            if (this.x > 2480) {
+                this.world.camera_x = -2380;
             } else {
                 this.world.camera_x = -this.x + 100;
             }
@@ -183,7 +219,7 @@ class Character extends MovableObject {
                 // audioCharacterHurt.play();
             }
             else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN) {
-                if (!this.isAttacking){
+                if (!this.isAttacking) {
                     this.playAnimation(this.IMAGES_SWIM);
                 }
             }
@@ -193,7 +229,7 @@ class Character extends MovableObject {
             else if (this.world.keyboard.SPACE) {
                 // nichts tun.
             }
-            else if (idleTime > 3000) {
+            else if (idleTime > 8000) {
                 this.playAnimation(this.IMAGES_LONG_IDLE);
             }
             else {
@@ -214,6 +250,10 @@ class Character extends MovableObject {
     }
 
 
+    /**
+     * Check if the character is idle.
+     * @returns {boolean} True if idle
+     */
     idle() {
         if (!this.isDead() && !this.isHurt() && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.world.keyboard.UP && !this.world.keyboard.DOWN) {
             return true;
@@ -221,64 +261,108 @@ class Character extends MovableObject {
     }
 
 
+    /**
+     * Play the character's attack animation.
+     * @param {function} [onFinish] - Callback after attack finishes
+     */
     playAttack(onFinish) {
-        if (this.isAttacking) return; // Schon am Angreifen → überspringen
+        if (!this.canAttack()) return;
 
-        this.isAttacking = true;
-        this.currentImage = 0; // Animation beginnt bei Frame 0
-
+        this.startAttack();
+        let images = this.getAttackImages();
         let i = 0;
 
-        let interval = setInterval(() => {  
-            let images = this.IMAGES_ATTACK;
-            if (this.poisonAmount > 0) {
-                images = this.IMAGES_POISON_ATTACK;
-            }
-            let path = images[i];
-            this.img = this.imageCache[path];
+        let interval = setInterval(() => {
+            this.showAttackFrame(images, i);
             i++;
 
-            // Animation fertig?
-            if (i >= images.length) {
+            if (this.isAttackFinished(i, images)) {
                 clearInterval(interval);
-                this.isAttacking = false;
-
-                if (onFinish) {
-                    onFinish();
-                    audioCharacterAttack.play();
-                };  // Bubble schießen
+                this.finishAttack(onFinish);
             }
         }, 80);
     }
 
 
+    /**
+     * Check if the character can attack.
+     * @returns {boolean} True if attack is possible
+     */
+    canAttack() {
+        return !this.isAttacking;
+    }
+
+
+    /**
+     * Start attack sequence.
+     */
+    startAttack() {
+        this.isAttacking = true;
+        this.currentImage = 0;
+    }
+
+
+    /**
+     * Get the appropriate attack animation images.
+     * @returns {string[]} Attack image paths
+     */
+    getAttackImages() {
+        return this.poisonAmount > 0 ? this.IMAGES_POISON_ATTACK : this.IMAGES_ATTACK;
+    }
+
+
+    /**
+     * Display a single attack frame.
+     * @param {string[]} images - Animation frames
+     * @param {number} i - Frame index
+     */
+    showAttackFrame(images, i) {
+        this.img = this.imageCache[images[i]];
+    }
+
+
+    /**
+     * Check if attack animation is finished.
+     * @param {number} i - Frame index
+     * @param {string[]} images - Animation frames
+     * @returns {boolean} True if finished
+     */
+    isAttackFinished(i, images) {
+        return i >= images.length;
+    }
+
+
+    /**
+     * Finish attack animation.
+     * @param {function} [onFinish] - Optional callback
+     */
+    finishAttack(onFinish) {
+        this.isAttacking = false;
+        if (onFinish) {
+            onFinish();
+            audioCharacterAttack.play();
+        }
+    }
+
+
+    /**
+     * Initiates the death sequence for the character.
+     * Plays the death animation frame by frame and stops the game when finished.
+     * Also sets energy to 0 and plays the game over audio.
+     */
     die() {
         if (this.isDeadAnimationRunning) return;
-
         this.isDeadAnimationRunning = true;
-        this.energy = 0;
-        this.currentImage = 0;
-
-        let i = 0;
-
-        let interval = setInterval(() => {
+        this.energy = 0; this.currentImage = 0;
+        let i = 0; let interval = setInterval(() => {
             let path = this.IMAGES_DEAD[i];
             this.img = this.imageCache[path];
-            i++;
-
-            if (i >= this.IMAGES_DEAD.length) {
+            i++; if (i >= this.IMAGES_DEAD.length) {
                 clearInterval(interval);
-
-                // Spiel endet – Boss bleibt stehen
                 this.isFinalDead = true;
             }
         }, 120);
         this.world.stopGame();
         audioGameLose.play();
-    }
-
-
-    jump() {
-
     }
 }

@@ -1,4 +1,13 @@
-let level1;
+/**
+ * Creates and returns the first game level (Level 1) with predefined enemies, 
+ * background layers, and collectable items.
+ *
+ * @returns {Level} A new Level instance containing:
+ *   - Enemies (Pufferfish, Jellyfish) with predefined positions
+ *   - Empty background objects array
+ *   - Background layer paths and their respective image files
+ *   - Collectable items (Coins and Poison) with predefined positions
+ */
 function createLevel1() {
     return new Level(
         [
@@ -14,8 +23,6 @@ function createLevel1() {
             new Jellyfish(1020, 200),
             new Jellyfish(1220, 50),
             new Pufferfish(1640, 0),
-            // new Pufferfish(1740, 0),
-            // new Pufferfish(1900, 0)
         ],
         [
 

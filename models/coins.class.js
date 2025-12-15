@@ -1,5 +1,10 @@
+/**
+ * Class representing collectible coins in the game.
+ * Extends MovableObject to inherit position, collision, and animation logic.
+ */
 class Coins extends MovableObject {
 
+    /** @type {string[]} Array of image paths for coin animation */
     IMAGES_COINS = [
         'img/4. Marcadores/1. Coins/1.png',
         'img/4. Marcadores/1. Coins/2.png',
@@ -7,17 +12,24 @@ class Coins extends MovableObject {
         'img/4. Marcadores/1. Coins/4.png'
     ];
 
+    /** @type {object} Collision offsets */
     offset = {
         top: 0,
         bottom: 0,
         left: 0,
         right: 0,
     }
+
+    /** @type {string} Type of the collectible (default: 'coin') */
     type;
 
 
-
-
+    /**
+     * Creates a new coin instance at a given position.
+     * @param {number} x X-coordinate for the coin
+     * @param {number} y Y-coordinate for the coin
+     * @param {string} [type='coin'] Type of collectible
+     */
     constructor(x, y, type = 'coin') {
         super().loadImage('img/4. Marcadores/1. Coins/1.png');
         this.loadImages(this.IMAGES_COINS);
@@ -26,11 +38,13 @@ class Coins extends MovableObject {
         this.height = 40;
         this.width = 40;
         this.type = type;
-
-        // this.animate();
     }
 
 
+    /**
+     * Starts the coin animation loop.
+     * Loops through IMAGES_COINS at a fixed interval.
+     */
     animate() {
         this.world.setStoppableInterval(() => {
             this.playAnimation(this.IMAGES_COINS);
@@ -38,7 +52,7 @@ class Coins extends MovableObject {
     }
     
 
-    drawFrame(ctx) {                                                 // roter kasten um den charakter.
+    drawFrame(ctx) {
         if (this instanceof Coins) {
             ctx.beginPath();
             ctx.lineWidth = '3';

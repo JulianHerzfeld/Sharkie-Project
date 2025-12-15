@@ -1,21 +1,43 @@
+/**
+ * Base class for all drawable objects on the canvas.
+ */
 class DrawableObject {
+
+    /** @type {number} Horizontal position */
     x = 120;
+
+    /** @type {number} Vertical position */
     y = 300;
+
+    /** @type {HTMLImageElement} Current image to be drawn */
     img;
+
+    /** @type {number} Width of the object */
     width = 150;
+
+    /** @type {number} Height of the object */
     height = 120;
+
+    /** @type {number} Index of the current animation frame */
     currentImage = 0;
+
+    /** @type {Object<string, HTMLImageElement>} Cache for preloaded images */
     imageCache = {};
 
 
-
-
+    /**
+     * Load a single image into the object.
+     * @param {string} path - Path to the image file
+     */
     loadImage(path) {
         this.img = new Image();
         this.img.src = path;
     }
 
-
+    /**
+     * Preload multiple images and store them in the cache.
+     * @param {string[]} arr - Array of image file paths
+     */
     loadImages(arr) {
         arr.forEach((path) => {
             let img = new Image();
@@ -24,7 +46,10 @@ class DrawableObject {
         });
     }
 
-
+    /**
+     * Draw the current image on the canvas.
+     * @param {CanvasRenderingContext2D} ctx - Canvas rendering context
+     */
     draw(ctx) {
         if (!this.img) {
             console.warn("Object has no image:", this);
@@ -47,7 +72,4 @@ class DrawableObject {
             ctx.stroke();
         }
     }
-
-
-
 }

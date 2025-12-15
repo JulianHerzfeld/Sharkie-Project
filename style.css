@@ -38,36 +38,17 @@ canvas {
     display: block;
 }
 
-/* #game-over-screen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-} */
-
 #canvas-container {
     position: relative;
 }
 
 .canvas-overlay {
     position: absolute;
-    /* display: flex;
-    flex-direction: column;
-    justify-content: space-around; */
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.3);
-    /* display: flex;
-    justify-content: center; */
-    /* align-items: center; */
     z-index: 10;
 }
 
@@ -93,37 +74,6 @@ canvas {
     background-repeat: no-repeat;
 }
 
-.button-start-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* margin-top: 140px; */
-    padding-bottom: 60px;
-    gap: 20px;
-}
-
-.button-container {
-    display: flex;
-    flex-direction: column;
-    /* margin-top: 100px; */
-    gap: 20px;
-}
-
-.buttons {
-    width: 180px;
-    height: 40px;
-    font-size: 20px;
-    font-family: 'Luckiest';
-}
-
-.buttons:hover {
-    cursor: pointer;
-}
-
-.buttons-victory {
-    padding-top: 30px;
-}
-
 .game-win-overlay {
     display: flex;
     justify-content: center;
@@ -134,35 +84,11 @@ canvas {
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
-    /* gap: 70px; */
 }
 
 .game-over-title {
     width: 300px;
     height: 50px;
-}
-
-.mute-button-container {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 11;
-    margin-bottom: 4px;
-}
-
-.mute-button {
-    border-width: unset;
-    border-style: unset;
-    padding-inline: unset;
-    padding-block: unset;
-    border-radius: 10px;
-    display: flex;
-    background-color: rgba(255, 255, 255, 0.4);
-}
-
-.mute-button:hover {
-    cursor: pointer;
-    background-color: rgba(255, 255, 255, 1);
 }
 
 .volume {
@@ -172,71 +98,6 @@ canvas {
 
 .panel-mobile {
     display: flex;
-}
-
-.move-button-mobile {
-    position: absolute;
-    bottom: 5px;
-    left: 5px;
-    display: grid;
-    grid-template-columns: 40px 40px 40px;
-    grid-template-rows: 40px 40px 40px;
-    gap: 3px;
-}
-
-.move-button-mobile button,
-.action-button-mobile button {
-    border-width: unset;
-    border-style: unset;
-    padding-inline: unset;
-    padding-block: unset;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.7);
-    touch-action: none;
-}
-
-.move-button-mobile button:hover,
-.action-button-mobile button:hover {
-    cursor: pointer;
-}
-
-.action-button-mobile {
-    position: absolute;
-    bottom: 15px;
-    right: 15px;
-}
-
-/* .action-button-mobile button {
-    border-width: unset;
-    border-style: unset;
-    padding-inline: unset;
-    padding-block: unset;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-} */
-
-.up {
-    grid-column: 2;
-    grid-row: 1;
-}
-
-.left {
-    grid-column: 1;
-    grid-row: 2;
-}
-
-.right {
-    grid-column: 3;
-    grid-row: 2;
-}
-
-.down {
-    grid-column: 2;
-    grid-row: 3;
 }
 
 .rotate-message {
@@ -261,21 +122,6 @@ canvas {
     width: 100px;
 }
 
-.control-overlay-close-button {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    z-index: 10;
-}
-
-.control-overlay-close-button button {
-    border-width: unset;
-    border-style: unset;
-    padding-inline: unset;
-    padding-block: unset;
-    background-color: unset;
-}
-
 .control-overlay-close-img {
     width: 35px;
 }
@@ -287,30 +133,12 @@ canvas {
 
 .control-overlay-container {
     position: absolute;
-    /* top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%; */
     inset: 0;
     z-index: 100;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-
-/* .control-overlay-content {
-    position: relative;
-    max-width: 90%;
-    max-height: 90%;
-    width: 500px;
-    height: 400px;
-    background-color: #5589ff;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-} */
 
 .control-overlay-content {
     position: relative;
@@ -326,13 +154,6 @@ canvas {
     overflow-y: auto;
     box-sizing: border-box;
 }
-
-/* .control-overlay-content p {
-    font-size: 30px;
-    margin-block-start: 0;
-    margin-block-end: 0;
-    color: #FFFFFF;
-} */
 
 .control-overlay-content p {
     font-size: clamp(18px, 4vw, 30px);
@@ -366,12 +187,6 @@ canvas {
     line-height: 1.4;
 }
 
-/* .control-shark p {
-    font-size: 30px;
-    margin-block-start: 0;
-    margin-block-end: 0;
-} */
-
 .control-move-img {
     width: 150px;
 }
@@ -380,33 +195,11 @@ canvas {
     width: 220px;
 }
 
-.game-menu-container {
-    position: absolute;
-    top: 32px;
-    right: 1px;
-    z-index: 10;
-}
-
-/* Menü-Button */
-.game-menu-button {
-    border: none;
-    padding: 6px;
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 10px;
-    display: flex;
-}
-
-.game-menu-button:hover {
-    cursor: pointer;
-    background-color: rgba(255, 255, 255, 1);
-}
-
 .game-menu-button img {
     width: 18px;
     height: 18px;
 }
 
-/* Menü */
 .game-menu {
     position: absolute;
     top: 40px;
@@ -421,7 +214,6 @@ canvas {
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
-/* Menü-Buttons */
 .game-menu-item {
     border: none;
     border-radius: 10px;
@@ -441,17 +233,6 @@ canvas {
     position: absolute;
     bottom: 0;
     margin-bottom: 20px;
-}
-
-.footer-impressum button {
-    border-width: unset;
-    border-style: unset;
-    padding-inline: unset;
-    padding-block: unset;
-}
-
-.back-to-main {
-    width: 100px;
 }
 
 @media only screen and (max-width: 720px) {
