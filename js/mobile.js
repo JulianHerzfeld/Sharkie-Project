@@ -6,27 +6,37 @@ let landscape = true;
 
 
 /**
- * Determines whether the current device is a mobile device.
+ * Determines whether the current device is a mobile or touch-capable device.
  *
- * Checks for touch support or maximum touch points.
+ * The function checks the number of available touch points reported by the
+ * browser. Devices with one or more touch points are typically mobile or
+ * tablet devices, but this may also include touch-enabled laptops.
  *
- * @returns {boolean} True if the device supports touch input, otherwise false.
+ * @function isMobileDevice
+ * @returns {boolean} Returns `true` if the device supports touch input,
+ *                    otherwise `false`.
  */
 function isMobileDevice() {
-    return (
-        'ontouchstart' in window ||
-        navigator.maxTouchPoints > 0
-    );
+    return navigator.maxTouchPoints > 0;
 }
 
 
 /**
- * Checks if the device is currently in landscape orientation.
+ * Determines whether the current screen orientation is landscape.
  *
- * @returns {boolean} True if the width is greater than the height, otherwise false.
+ * The function first attempts to use the Screen Orientation API if available.
+ * If the API is not supported by the browser, it falls back to a media query
+ * check using `window.matchMedia`.
+ *
+ * @function isLandscape
+ * @returns {boolean} Returns `true` if the screen orientation is landscape,
+ *                    otherwise `false`.
  */
 function isLandscape() {
-    return window.innerWidth > window.innerHeight;
+    if (screen.orientation?.type) {
+        return screen.orientation.type.startsWith("landscape");
+    }
+    return window.matchMedia("(orientation: landscape)").matches;
 }
 
 
@@ -120,3 +130,38 @@ function handlePortraitMode() {
         landscape = false;
     }
 }
+
+
+/**
+ * Adds appropriate event listeners to handle UI updates based on device type.
+ *
+ * - On mobile or touch-capable devices, the UI is updated after an orientation
+ *   change using a short timeout to allow the layout to stabilize.
+ * - On non-mobile devices, the UI is updated whenever the window is resized.
+ *
+ * This ensures that `updateMobileUi` is called only when necessary and prevents
+ * layout issues due to orientation or size changes.
+ *
+ * @listens window#orientationchange
+ * @listens window#resize
+ */
+if (isMobileDevice()) {
+    window.addEventListener("orientationchange", () => {
+        setTimeout(updateMobileUi, 100);
+    });
+} else {
+    window.addEventListener("resize", updateMobileUi);
+}
+
+
+/**
+ * Executes the mobile UI update logic once the initial HTML document
+ * has been fully loaded and parsed.
+ *
+ * This ensures that all required DOM elements are available before
+ * `updateMobileUi` is executed, preventing access to undefined nodes
+ * or incomplete layouts.
+ *
+ * @listens document#DOMContentLoaded
+ */
+document.addEventListener("DOMContentLoaded", updateMobileUi);

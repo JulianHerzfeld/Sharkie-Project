@@ -193,15 +193,4 @@ class Pufferfish extends MovableObject {
             }
         }, 130);
     }
-
-
-    drawFrame(ctx) {
-        if (this instanceof Pufferfish) {
-            ctx.beginPath();
-            ctx.lineWidth = '3';
-            ctx.strokeStyle = 'red';
-            ctx.rect(this.x + 5, this.y + 7, this.width - 15, this.height - 10);
-            ctx.stroke();
-        }
-    }
 }

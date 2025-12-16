@@ -72,15 +72,4 @@ class ShootableObject extends MovableObject {
             this.x += this.direction * 10;
         }, 25);
     }
-
-
-    drawFrame(ctx) {                                                 // roter kasten um den charakter.
-        if (this instanceof ShootableObject) {
-            ctx.beginPath();
-            ctx.lineWidth = '3';
-            ctx.strokeStyle = 'red';
-            ctx.rect(this.x, this.y, this.width, this.height);
-            ctx.stroke();
-        }
-    }
 }

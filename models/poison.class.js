@@ -54,18 +54,4 @@ class Poison extends MovableObject {
             this.playAnimation(this.IMAGES_POISON);
         }, 200);
     }
-
-
-    drawFrame(ctx) {                                                 // roter kasten um den charakter.
-        if (this instanceof Poison) {
-            ctx.beginPath();
-            ctx.lineWidth = '3';
-            ctx.strokeStyle = 'red';
-            ctx.rect(this.x + 10, this.y + 25, this.width - 20, this.height - 27);
-            ctx.stroke();
-        }
-    }
-
-
-
 }

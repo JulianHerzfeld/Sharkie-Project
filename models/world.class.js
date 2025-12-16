@@ -99,6 +99,7 @@ class World {
     stopBackgroundAudio() {
         audioBackground.pause();
         audioBackground.currentTime = 0;
+        this.character.stopSnoring();
     }
 
 
@@ -331,7 +332,6 @@ class World {
                 setTimeout(() => {
                     this.character.canHurt = true;
                 }, this.character.hurtCooldown);
-                console.log('Collision with Character, energy ', this.character.energy);
             }
         });
     }
@@ -346,7 +346,6 @@ class World {
             if (this.character.isColliding(item)) {
                 this.collect(item);
                 this.level.collectableItem.splice(index, 1);
-                console.log(this.character.coinsAmount);
             }
         });
     }
@@ -691,7 +690,6 @@ class World {
 
         if (mo.img && mo.img.complete && mo.img.naturalWidth !== 0) {
             mo.draw(this.ctx);
-            mo.drawFrame(this.ctx);
         }
 
         if (mo.otherDirection) {

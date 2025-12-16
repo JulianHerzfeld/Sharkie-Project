@@ -1,16 +1,66 @@
+@font-face {
+    font-family: 'Luckiest';
+    src: url('../img/5.Font/Luckiest_Guy/LuckiestGuy-Regular.ttf') format('truetype');
+}
+
+body {
+    margin: 0;
+    font-family: 'Luckiest';
+    min-height: 100vh;
+    background-image: url('../img/3. Background/under_water_4.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.page-wrapper {
+    max-width: 1920px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    position: relative;
+}
+
+h2 {
+    color: rgb(141 245 231);
+    font-size: 40px;
+}
+
+.main-content {
+    margin: 0;
+    padding: 50px;
+    box-sizing: border-box;
+}
+
+p {
+    margin-bottom: 50px;
+    font-size: 20px;
+    color: #FFFFFF;
+}
+
+a {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: rgb(117, 205, 255);
+}
+
 .back-to-main {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 30px;
+    right: 30px;
     border-width: unset;
     border-style: unset;
     padding-inline: unset;
     padding-block: unset;
+    background-color: unset;
 }
 
 .back-to-main:hover {
     cursor: pointer;
-    scale: 1.2;
+    transform: scale(1.2);
 }
 
 .back-to-main-img {

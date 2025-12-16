@@ -146,6 +146,9 @@ class Character extends MovableObject {
     /** @type {number} Hurt cooldown in milliseconds */
     hurtCooldown = 1000;
 
+    /** @type {boolean} Whether the character is currently Snoring */
+    isSnoring = false;
+
 
     /**
      * Create the main character and load all animations.
@@ -212,40 +215,51 @@ class Character extends MovableObject {
             let idleTime = Date.now() - this.lastMoveTime;
 
             if (this.isDead()) {
+                this.stopSnoring();
                 this.die();
             }
             else if (this.isHurt() && !this.isAttacking) {
+                this.stopSnoring();
                 this.playAnimation(this.IMAGES_HURT);
-                // audioCharacterHurt.play();
             }
             else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN) {
+                this.stopSnoring();
                 if (!this.isAttacking) {
                     this.playAnimation(this.IMAGES_SWIM);
                 }
             }
             else if (this.isAttacking) {
+                this.stopSnoring();
                 // Attack nutzt eigene Animation → nichts tun
             }
             else if (this.world.keyboard.SPACE) {
-                // nichts tun.
+                this.stopSnoring();
             }
             else if (idleTime > 8000) {
                 this.playAnimation(this.IMAGES_LONG_IDLE);
+                if (!this.isSnoring) {
+                    audioCharacterSnore.loop = true;
+                    audioCharacterSnore.play();
+                    this.isSnoring = true;
+                }
             }
             else {
+                this.stopSnoring();
                 this.playAnimation(this.IMAGES_IDLE);
             }
         }, 130);
     }
 
 
-    drawFrame(ctx) {                                                 // roter kasten um den charakter.
-        if (this instanceof Character) {
-            ctx.beginPath();
-            ctx.lineWidth = '3';
-            ctx.strokeStyle = 'red';
-            ctx.rect(this.x + 36, this.y + 100, this.width - 70, this.height - 150);
-            ctx.stroke();
+    /**
+     * Stops the character's snoring sound if it is currently playing.
+     * Resets the audio playback and updates the snoring state.
+     */
+    stopSnoring() {
+        if (this.isSnoring) {
+            audioCharacterSnore.pause();
+            audioCharacterSnore.currentTime = 0;
+            this.isSnoring = false;
         }
     }
 

@@ -102,16 +102,4 @@ class Jellyfish extends MovableObject {
             this.playAnimation(this.IMAGES_SWIM);
         }, 250);
     }
-
-
-    drawFrame(ctx) {
-        if (this instanceof Jellyfish) {
-            ctx.beginPath();
-            ctx.lineWidth = '3';
-            ctx.strokeStyle = 'red';
-            ctx.rect(this.x + 5, this.y + 7, this.width - 10, this.height - 18);
-            ctx.stroke();
-        }
-    }
-
 }

@@ -55,6 +55,10 @@ audioManager.addSound(collectPoison);
 let collectCoin = new Audio('audio/collect-coin.mp3');
 audioManager.addSound(collectCoin);
 
+/** Character Snore sound */
+let audioCharacterSnore = new Audio('audio/snore-character.mp3');
+audioManager.addSound(audioCharacterSnore);
+
 
 /**
  * Updates the visibility of the mute/unmute buttons based on the current

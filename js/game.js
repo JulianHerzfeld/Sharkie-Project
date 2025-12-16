@@ -44,8 +44,6 @@ function init() {
     document.getElementById('overlay-start-screen').classList.add('hidden');
     updateMobileUi();
     gameOver = false;
-
-    console.log('my character is', world.character);
 }
 
 
@@ -189,10 +187,16 @@ function updateInits() {
 function setGameMenuEvents() {
     const menuToggle = document.getElementById('game-menu-toggle');
     const gameMenu = document.getElementById('game-menu');
+    const controlToggle = document.getElementById('control-menu-toggle');
+    const controlMenu = document.getElementById('control-overlay');
+    const controlMenuContent = document.getElementById('control-overlay-content');
 
     setupMenuToggle(menuToggle, gameMenu);
+    setupMenuToggle(controlToggle, controlMenu);
     setupMenuClick(gameMenu);
+    setupMenuClick(controlMenuContent);
     setupDocumentClick(gameMenu);
+    setupDocumentClick(controlMenu);
 }
 
 
@@ -235,13 +239,6 @@ function setupDocumentClick(menuElement) {
 
 
 /**
- * Updates mobile UI elements when the window is resized or orientation changes.
- */
-window.addEventListener('resize', updateMobileUi);
-window.addEventListener('orientationchange', updateMobileUi);
-
-
-/**
  * Handles keydown events for controlling the keyboard object.
  */
 window.addEventListener("keydown", (e) => {
@@ -267,13 +264,3 @@ window.addEventListener("keyup", (e) => {
     if (e.keyCode == 32) keyboard.SPACE = false;
     if (e.keyCode == 68) keyboard.D = false;
 });
-
-
-
-
-
-
-
-
-// impressum hinzufügen,                             // fehlt noch inhalt.
-// alles nochmal testen,

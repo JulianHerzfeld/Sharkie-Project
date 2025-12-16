@@ -389,17 +389,4 @@ class Endboss extends MovableObject {
         }
         this.isAttacking = false;
     }
-
-
-    drawFrame(ctx) {                                                 // roter kasten um den charakter.
-        if (this instanceof Endboss) {
-            ctx.beginPath();
-            ctx.lineWidth = '3';
-            ctx.strokeStyle = 'red';
-            ctx.rect(this.x + 25, this.y + 175, this.width - 60, this.height - 245);
-            ctx.stroke();
-        }
-    }
-
-
 }
