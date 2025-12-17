@@ -18,10 +18,10 @@ class Poison extends MovableObject {
 
     /** @type {object} Collision offsets */
     offset = {
-        top: 25,
-        bottom: 27,
-        left: 10,
-        right: 20,
+        top: 33,
+        bottom: 43,
+        left: 18,
+        right: 36,
     }
 
     /** @type {string} Type of collectible (default: 'poison') */

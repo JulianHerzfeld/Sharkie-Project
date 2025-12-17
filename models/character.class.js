@@ -167,87 +167,339 @@ class Character extends MovableObject {
 
 
     /**
-     * Animate the character's movement and idle state.
+     * Starts all animation and movement loops for the object.
+     * Initializes continuous logic such as movement updates and
+     * sprite animation cycles.
+     *
+     * This method is typically called once after the object
+     * has been added to the game world.
      */
     animate() {
+        this.startMovementLoop();
+        this.startAnimationLoop();
+    }
+
+
+    /**
+     * Starts the continuous movement update loop.
+     *
+     * Executes movement-related logic at approximately 60 frames per second.
+     * The loop updates the last movement timestamp, processes character movement
+     * based on input, and adjusts the camera position accordingly.
+     *
+     * The interval is registered as stoppable and will be cleared automatically
+     * when the game stops.
+     */
+    startMovementLoop() {
         this.world.setStoppableInterval(() => {
-            const moving = this.world.keyboard.LEFT ||
-                this.world.keyboard.RIGHT ||
-                this.world.keyboard.UP ||
-                this.world.keyboard.DOWN ||
-                this.world.keyboard.SPACE;
-
-            if (moving) {
-                this.lastMoveTime = Date.now();
-            }
-
-            if (this.world.keyboard.LEFT && this.x > -600 && !this.isAttacking) {
-                this.moveLeft();
-                this.otherDirection = true;
-                audioCharacterMove.play();
-            }
-
-            if (this.world.keyboard.RIGHT && this.x < 2880 && !this.isAttacking) {
-                this.moveRight();
-                this.otherDirection = false;
-                audioCharacterMove.play();
-            }
-
-            if (this.world.keyboard.UP && this.y > -80 && !this.isAttacking) {
-                this.moveUp();
-                audioCharacterMove.play();
-            }
-
-            if (this.world.keyboard.DOWN && this.y < 310 && !this.isAttacking) {
-                this.moveDown();
-                audioCharacterMove.play();
-            }
-
-            if (this.x > 2480) {
-                this.world.camera_x = -2380;
-            } else {
-                this.world.camera_x = -this.x + 100;
-            }
-
+            this.updateLastMoveTime();
+            this.handleMovement();
+            this.updateCamera();
         }, 1000 / 60);
+    }
 
+
+    /**
+     * Updates the timestamp of the last movement or action.
+     *
+     * Checks whether the player is currently performing any movement or action
+     * via keyboard input (left, right, up, down, or attack).
+     * If any relevant input is detected, the current timestamp is stored.
+     *
+     * This timestamp is primarily used to determine idle and long-idle states
+     * for animation control.
+     */
+    updateLastMoveTime() {
+        const moving =
+            this.world.keyboard.LEFT ||
+            this.world.keyboard.RIGHT ||
+            this.world.keyboard.UP ||
+            this.world.keyboard.DOWN ||
+            this.world.keyboard.SPACE;
+
+        if (moving) {
+            this.lastMoveTime = Date.now();
+        }
+    }
+
+
+    /**
+     * Handles the movement of the character by calling the individual
+     * movement functions for left, right, up, and down directions.
+     *
+     * This function coordinates all directional movement, but does not
+     * return any value. Movement logic is implemented in the called functions.
+     */
+    handleMovement() {
+        this.characterMoveLeft();
+        this.characterMoveRight();
+        this.characterMoveUp();
+        this.characterMoveDown();
+    }
+
+
+    /**
+     * Moves the character to the left if movement in that direction is allowed.
+     *
+     * Checks whether the character can move left using `canMoveLeft()`. 
+     * If movement is possible, executes `moveLeft()`, updates the character's
+     * direction state, and plays the movement audio.
+     */
+    characterMoveLeft() {
+        if (this.canMoveLeft()) {
+            this.moveLeft();
+            this.otherDirection = true;
+            audioCharacterMove.play();
+        }
+    }
+
+
+    /**
+     * Moves the character to the right if movement in that direction is allowed.
+     *
+     * Checks whether the character can move right using `canMoveRight()`. 
+     * If movement is possible, executes `moveRight()`, updates the character's
+     * direction state, and plays the movement audio.
+     */
+    characterMoveRight() {
+        if (this.canMoveRight()) {
+            this.moveRight();
+            this.otherDirection = false;
+            audioCharacterMove.play();
+        }
+    }
+
+
+    /**
+     * Moves the character upward if movement in that direction is allowed.
+     *
+     * Checks whether the character can move up using `canMoveUp()`. 
+     * If movement is possible, executes `moveUp()` and plays the movement audio.
+     */
+    characterMoveUp() {
+        if (this.canMoveUp()) {
+            this.moveUp();
+            audioCharacterMove.play();
+        }
+    }
+
+
+    /**
+     * Moves the character downward if movement in that direction is allowed.
+     *
+     * Checks whether the character can move down using `canMoveDown()`. 
+     * If movement is possible, executes `moveDown()` and plays the movement audio.
+     */
+    characterMoveDown() {
+        if (this.canMoveDown()) {
+            this.moveDown();
+            audioCharacterMove.play();
+        }
+    }
+
+
+    /**
+     * Checks if the character can move left.
+     *
+     * The character can move left if the LEFT key is pressed, the x-position
+     * is greater than -600, and the character is not currently attacking.
+     *
+     * @returns {boolean} True if the character can move left, otherwise false.
+     */
+    canMoveLeft() {
+        return this.world.keyboard.LEFT && this.x > -600 && !this.isAttacking;
+    }
+
+
+    /**
+     * Checks if the character can move right.
+     *
+     * The character can move right if the RIGHT key is pressed, the x-position
+     * is less than 2880, and the character is not currently attacking.
+     *
+     * @returns {boolean} True if the character can move right, otherwise false.
+     */
+    canMoveRight() {
+        return this.world.keyboard.RIGHT && this.x < 2880 && !this.isAttacking;
+    }
+
+
+    /**
+     * Checks if the character can move up.
+     *
+     * The character can move up if the UP key is pressed, the y-position
+     * is greater than -80, and the character is not currently attacking.
+     *
+     * @returns {boolean} True if the character can move up, otherwise false.
+     */
+    canMoveUp() {
+        return this.world.keyboard.UP && this.y > -80 && !this.isAttacking;
+    }
+
+
+    /**
+     * Checks if the character can move down.
+     *
+     * The character can move down if the DOWN key is pressed, the y-position
+     * is less than 310, and the character is not currently attacking.
+     *
+     * @returns {boolean} True if the character can move down, otherwise false.
+     */
+    canMoveDown() {
+        return this.world.keyboard.DOWN && this.y < 310 && !this.isAttacking;
+    }
+
+
+    /**
+     * Updates the camera position based on the character's x-coordinate.
+     *
+     * If the character's x-position exceeds 2480, the camera is fixed at -2380.
+     * Otherwise, the camera follows the character, offset by 100 units.
+     */
+    updateCamera() {
+        if (this.x > 2480) {
+            this.world.camera_x = -2380;
+        } else {
+            this.world.camera_x = -this.x + 100;
+        }
+    }
+
+
+    /**
+     * Starts the character's animation loop.
+     *
+     * Uses the world's `setStoppableInterval` method to repeatedly call
+     * `updateAnimationState()` every 130 milliseconds, updating the character's
+     * animation frames.
+     */
+    startAnimationLoop() {
         this.world.setStoppableInterval(() => {
-            let idleTime = Date.now() - this.lastMoveTime;
-
-            if (this.isDead()) {
-                this.stopSnoring();
-                this.die();
-            }
-            else if (this.isHurt() && !this.isAttacking) {
-                this.stopSnoring();
-                this.playAnimation(this.IMAGES_HURT);
-            }
-            else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN) {
-                this.stopSnoring();
-                if (!this.isAttacking) {
-                    this.playAnimation(this.IMAGES_SWIM);
-                }
-            }
-            else if (this.isAttacking) {
-                this.stopSnoring();
-                // Attack nutzt eigene Animation → nichts tun
-            }
-            else if (this.world.keyboard.SPACE) {
-                this.stopSnoring();
-            }
-            else if (idleTime > 8000) {
-                this.playAnimation(this.IMAGES_LONG_IDLE);
-                if (!this.isSnoring) {
-                    audioCharacterSnore.loop = true;
-                    audioCharacterSnore.play();
-                    this.isSnoring = true;
-                }
-            }
-            else {
-                this.stopSnoring();
-                this.playAnimation(this.IMAGES_IDLE);
-            }
+            this.updateAnimationState();
         }, 130);
+    }
+
+
+    /**
+     * Updates the character's animation state based on current conditions.
+     *
+     * Determines which animation or state should be active:
+     * - If the character is dead, triggers the dead state.
+     * - If the character is hurt and not attacking, triggers the hurt state.
+     * - If the character is moving via keyboard input, triggers the swimming state.
+     * - If the character is attacking, stops snoring animation.
+     * - If the SPACE key is pressed, stops snoring animation.
+     * - If the character has been idle for more than 8000 ms, triggers the long idle state.
+     * - Otherwise, triggers the normal idle state.
+     */
+    updateAnimationState() {
+        const idleTime = Date.now() - this.lastMoveTime;
+
+        if (this.isDead()) {
+            this.handleDeadState();
+        }
+        else if (this.isHurt() && !this.isAttacking) {
+            this.handleHurtState();
+        }
+        else if (this.isMovingByKeyboard()) {
+            this.handleSwimState();
+        }
+        else if (this.isAttacking) {
+            this.stopSnoring();
+        }
+        else if (this.world.keyboard.SPACE) {
+            this.stopSnoring();
+        }
+        else if (idleTime > 8000) {
+            this.handleLongIdleState();
+        }
+        else {
+            this.handleIdleState();
+        }
+    }
+
+
+    /**
+     * Checks if the character is currently moving via keyboard input.
+     *
+     * Returns true if any of the movement keys (LEFT, RIGHT, UP, DOWN) are pressed.
+     * 
+     * @returns {boolean} True if the character is moving by keyboard, otherwise false.
+     */
+    isMovingByKeyboard() {
+        return (
+            this.world.keyboard.RIGHT ||
+            this.world.keyboard.LEFT ||
+            this.world.keyboard.UP ||
+            this.world.keyboard.DOWN
+        );
+    }
+
+
+    /**
+     * Handles the character's dead state.
+     *
+     * Stops any snoring animation and triggers the character's death sequence
+     * by calling `die()`.
+     */
+    handleDeadState() {
+        this.stopSnoring();
+        this.die();
+    }
+
+
+    /**
+     * Handles the character's hurt state.
+     *
+     * Stops any snoring animation and plays the hurt animation
+     * by using the `IMAGES_HURT` animation frames.
+     */
+    handleHurtState() {
+        this.stopSnoring();
+        this.playAnimation(this.IMAGES_HURT);
+    }
+
+
+    /**
+     * Handles the character's swimming/moving state.
+     *
+     * Stops any snoring animation and, if the character is not attacking,
+     * plays the swimming animation using the `IMAGES_SWIM` frames.
+     */
+    handleSwimState() {
+        this.stopSnoring();
+        if (!this.isAttacking) {
+            this.playAnimation(this.IMAGES_SWIM);
+        }
+    }
+
+
+    /**
+     * Handles the character's long idle state.
+     *
+     * Plays the long idle animation using `IMAGES_LONG_IDLE`. 
+     * If the character is not already snoring, starts the snoring audio
+     * in a loop and sets the `isSnoring` flag to true.
+     */
+    handleLongIdleState() {
+        this.playAnimation(this.IMAGES_LONG_IDLE);
+
+        if (!this.isSnoring) {
+            audioCharacterSnore.loop = true;
+            audioCharacterSnore.play();
+            this.isSnoring = true;
+        }
+    }
+
+
+    /**
+     * Handles the character's normal idle state.
+     *
+     * Stops any snoring animation and plays the standard idle animation
+     * using the `IMAGES_IDLE` frames.
+     */
+    handleIdleState() {
+        this.stopSnoring();
+        this.playAnimation(this.IMAGES_IDLE);
     }
 
 

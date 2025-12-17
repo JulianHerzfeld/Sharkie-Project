@@ -7,15 +7,15 @@ body {
     margin: 0;
     font-family: 'Luckiest';
     min-height: 100vh;
-    background-image: url('../img/3. Background/under_water_4.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+    background-color: #1727AE;
+    display: flex;
+    align-items: center;
 }
 
 .page-wrapper {
     max-width: 1920px;
     margin: 0 auto;
+    width: 450px;
     box-sizing: border-box;
     position: relative;
 }
@@ -26,8 +26,7 @@ h2 {
 }
 
 .main-content {
-    margin: 0;
-    padding: 50px;
+    margin: 20px;
     box-sizing: border-box;
 }
 
@@ -50,7 +49,7 @@ a:hover {
 .back-to-main {
     position: absolute;
     top: 30px;
-    right: 30px;
+    right: 16px;
     border-width: unset;
     border-style: unset;
     padding-inline: unset;

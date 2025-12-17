@@ -160,3 +160,25 @@
 .hidden {
     display: none;
 }
+
+@media (min-width: 900px) {
+    .move-button-mobile {
+        bottom: 40px;
+        left: 40px;
+    }
+
+    .action-button-mobile {
+        bottom: 40px;
+        right: 40px;
+    }
+}
+
+@media (min-height: 500px) {
+    .move-button-mobile {
+        bottom: 60px;
+    }
+
+    .action-button-mobile {
+        bottom: 80px;
+    }
+}

@@ -33,56 +33,71 @@ class Keyboard {
 
 
     /**
-     * Binds touch events for on-screen buttons to update key states.
-     * Handles touchstart and touchend for each directional and action button.
+     * Binds touch events to on-screen control buttons for mobile input.
+     *
+     * For each button (Up, Down, Left, Right, Shoot), this function:
+     *   - Selects the element by its ID.
+     *   - Sets up touchstart and touchend events using `setTouchstartEvent` and `setTouchendEvent`.
+     * Finally, it calls `preventTouchmove()` to disable default touch scrolling behavior.
      */
     bindBtnPressEvent() {
-        document.getElementById('btnUp').addEventListener('touchstart', (e) => {
+        const bindButton = (id, property) => {
+            const element = document.getElementById(id);
+            if (!element) return;
+            this.setTouchstartEvent(element, property);
+            this.setTouchendEvent(element, property);
+        };
+
+        bindButton('btnUp', 'UP');
+        bindButton('btnDown', 'DOWN');
+        bindButton('btnLeft', 'LEFT');
+        bindButton('btnRight', 'RIGHT');
+        bindButton('btnShoot', 'SPACE');
+        this.preventTouchmove();
+    }
+
+
+    /**
+     * Attaches a touchstart event listener to a DOM element.
+     *
+     * When the element is touched, prevents the default behavior and
+     * sets the corresponding property on `this` to true.
+     *
+     * @param {HTMLElement} element - The DOM element to attach the event to.
+     * @param {string} property - The property of `this` to set to true on touchstart.
+     */
+    setTouchstartEvent(element, property) {
+        element.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            this.UP = true;
+            this[property] = true;
         }, { passive: false });
+    }
 
-        document.getElementById('btnUp').addEventListener('touchend', (e) => {
-            this.UP = false;
+
+    /**
+     * Attaches a touchend event listener to a DOM element.
+     *
+     * When the touch ends on the element, sets the corresponding property
+     * on `this` to false.
+     *
+     * @param {HTMLElement} element - The DOM element to attach the event to.
+     * @param {string} property - The property of `this` to set to false on touchend.
+     */
+    setTouchendEvent(element, property) {
+        element.addEventListener('touchend', () => {
+            this[property] = false;
         }, { passive: false });
+    }
 
-        document.getElementById('btnLeft').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            this.LEFT = true;
-        }, { passive: false });
 
-        document.getElementById('btnLeft').addEventListener('touchend', (e) => {
-            this.LEFT = false;
-        }, { passive: false });
-
-        document.getElementById('btnRight').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            this.RIGHT = true;
-        }, { passive: false });
-
-        document.getElementById('btnRight').addEventListener('touchend', (e) => {
-            this.RIGHT = false;
-        }, { passive: false });
-
-        document.getElementById('btnDown').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            this.DOWN = true;
-        }, { passive: false });
-
-        document.getElementById('btnDown').addEventListener('touchend', (e) => {
-            this.DOWN = false;
-        }, { passive: false });
-
-        document.getElementById('btnShoot').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            this.SPACE = true;
-        }, { passive: false });
-
-        document.getElementById('btnShoot').addEventListener('touchend', (e) => {
-            this.SPACE = false;
-        }, { passive: false });
-
-        document.addEventListener('touchmove', e => {
+    /**
+     * Prevents the default touchmove behavior on the document.
+     *
+     * This stops the page from scrolling when the user swipes on the screen,
+     * which is useful for on-screen game controls.
+     */
+    preventTouchmove() {
+        document.addEventListener('touchmove', (e) => {
             e.preventDefault();
         }, { passive: false });
     }

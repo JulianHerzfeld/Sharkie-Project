@@ -100,7 +100,7 @@ class Endboss extends MovableObject {
     isAttacking = false;
 
     /** @type {number} Movement speed */
-    speed = 10;
+    speed = 8;
 
     /** @type {number} Health points of the boss */
     energy = 100;
@@ -149,7 +149,7 @@ class Endboss extends MovableObject {
 
                 this.playAnimation(this.IMAGES_SWIM);
             }
-        }, 135);
+        }, 95);
     }
 
 
@@ -267,7 +267,6 @@ class Endboss extends MovableObject {
                 this.finishDeadAnimation();
             }
         }, 120);
-
         audioGameWin.play();
     }
 
@@ -352,9 +351,11 @@ class Endboss extends MovableObject {
 
 
     /**
-     * Initiates the attack sequence for the Endboss.
-     * Plays the attack animation frame by frame and plays the attack sound for each frame.
-     * Prevents starting a new attack if the Endboss is already attacking, dead, or hurt.
+     * Starts the attack animation if the character is able to attack.
+     * The attack will not be triggered if the character is already attacking,
+     * dead, hurt, or currently playing a hurt animation.
+     *
+     * Stops any running animation before initiating the attack sequence.
      */
     playAttack() {
         if (this.isAttacking) return;
@@ -364,6 +365,22 @@ class Endboss extends MovableObject {
         this.stopCurrentAnimation();
         this.isAttacking = true;
         this.currentImage = 0;
+        this.startAttackAnimation();
+    }
+
+
+    /**
+     * Plays the attack animation frame by frame.
+     * Iterates through the attack image sequence using a timed interval.
+     * When the animation reaches the final frame, the animation is stopped
+     * and the attacking state is reset.
+     *
+     * Side effects:
+     * - Updates the currently displayed image.
+     * - Plays the attack sound effect during the animation.
+     * - Modifies the {@link isAttacking} state.
+     */
+    startAttackAnimation() {
         let i = 0;
 
         this.currentAnimationInterval = setInterval(() => {

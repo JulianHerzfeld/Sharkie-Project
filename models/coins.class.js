@@ -14,10 +14,10 @@ class Coins extends MovableObject {
 
     /** @type {object} Collision offsets */
     offset = {
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
+        top: 10,
+        bottom: 20,
+        left: 10,
+        right: 20,
     }
 
     /** @type {string} Type of the collectible (default: 'coin') */

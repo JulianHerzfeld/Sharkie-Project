@@ -352,29 +352,64 @@ class World {
 
 
     /**
-     * Handles collisions between bubbles and enemies.
-     * Applies damage, triggers enemy or endboss hit handlers,
-     * and removes bubbles if out of range or after hitting.
+     * Checks for collisions between bubbles and enemies.
+     *
+     * Iterates over all shootable objects (bubbles) and all enemies in the level,
+     * calling `bubbleHitEnemy()` to handle collisions between each bubble and enemy,
+     * and `checkBubbleRange()` to verify if the bubble is still within its valid range.
      */
     collisionBubbleWithEnemy() {
         this.shootableObjects.forEach((bubble, bIndex) => {
             this.level.enemies.forEach((enemy, eIndex) => {
-                if (this.checkBubbleCollision(bubble, enemy)) {
-                    enemy.hit(bubble.damage);
-                    this.removeBubble(bIndex);
-
-                    if (enemy instanceof Endboss) {
-                        this.handleEndbossHit(enemy);
-                    } else if (enemy.energy <= 0) {
-                        this.handleEnemyHit(enemy);
-                    }
-                }
-
-                if (this.isBubbleOutOfRange(bubble)) {
-                    this.removeBubble(bIndex);
-                }
+                this.bubbleHitEnemy(bubble, enemy, bIndex);
+                this.checkBubbleRange(bubble, bIndex);
             });
         });
+    }
+
+
+    /**
+     * Handles the interaction when a bubble hits an enemy.
+     *
+     * Checks if the given `bubble` collides with the `enemy` using `checkBubbleCollision()`.
+     * If a collision occurs:
+     *   - Reduces the enemy's health by `bubble.damage`.
+     *   - Removes the bubble from the game.
+     *   - If the enemy is an Endboss, calls `handleEndbossHit()`.
+     *   - Otherwise, if the enemy's energy reaches 0, calls `handleEnemyHit()`.
+     *
+     * @param {Object} bubble - The bubble object that may hit the enemy.
+     * @param {number} bubble.damage - The damage value inflicted by the bubble.
+     * @param {Object} enemy - The enemy object that may be hit by the bubble.
+     * @param {number} bIndex - The index of the bubble in the `shootableObjects` array.
+     */
+    bubbleHitEnemy(bubble, enemy, bIndex) {
+        if (this.checkBubbleCollision(bubble, enemy)) {
+            enemy.hit(bubble.damage);
+            this.removeBubble(bIndex);
+
+            if (enemy instanceof Endboss) {
+                this.handleEndbossHit(enemy);
+            } else if (enemy.energy <= 0) {
+                this.handleEnemyHit(enemy);
+            }
+        }
+    }
+
+
+    /**
+     * Checks if a bubble is out of its valid range and removes it if necessary.
+     *
+     * Uses `isBubbleOutOfRange()` to determine if the bubble has exceeded its range.
+     * If the bubble is out of range, it is removed from the `shootableObjects` array.
+     *
+     * @param {Object} bubble - The bubble object to check.
+     * @param {number} bIndex - The index of the bubble in the `shootableObjects` array.
+     */
+    checkBubbleRange(bubble, bIndex) {
+        if (this.isBubbleOutOfRange(bubble)) {
+            this.removeBubble(bIndex);
+        }
     }
 
 
@@ -509,7 +544,12 @@ class World {
 
 
     /**
-     * Checks if the endboss should attack the character based on distance.
+     * Checks whether the end boss can attack the character and executes the attack if possible.
+     *
+     * Iterates over all enemies in the level, filters for instances of `Endboss`,
+     * and calculates the distance between the character and the end boss. 
+     * If the character is within the attack range (distanceX < 230 and distanceY < 95)
+     * and the boss is able to attack (`canAttack` is true), triggers `endbossAttack()` on that enemy.
      */
     checkEndbossAttack() {
         this.level.enemies.forEach(enemy => {
@@ -517,22 +557,36 @@ class World {
 
             let charCenterX = this.characterCenterX();
             let charCenterY = this.characterCenterY();
-
             let bossCenterX = this.endbossCenterX(enemy);
             let bossCenterY = this.endbossCenterY(enemy);
-
             let distanceX = Math.abs(charCenterX - bossCenterX);
             let distanceY = Math.abs(charCenterY - bossCenterY);
 
             if (distanceX < 230 && distanceY < 95 && enemy.canAttack) {
-                enemy.playAttack();
-                enemy.canAttack = false;
-
-                setTimeout(() => {
-                    enemy.canAttack = true;
-                }, enemy.attackCooldown);
+                this.endbossAttack(enemy);
             }
         });
+    }
+
+
+    /**
+     * Executes an attack for the end boss on the given enemy.
+     *
+     * Calls the enemy's `playAttack()` method, disables their ability to attack,
+     * and re-enables it after the duration specified by `enemy.attackCooldown`.
+     *
+     * @param {Object} enemy - The enemy object being attacked.
+     * @param {Function} enemy.playAttack - Method to trigger the enemy's attack animation.
+     * @param {boolean} enemy.canAttack - Flag indicating if the enemy can currently attack.
+     * @param {number} enemy.attackCooldown - Duration (in milliseconds) before the enemy can attack again.
+     */
+    endbossAttack(enemy) {
+        enemy.playAttack();
+        enemy.canAttack = false;
+
+        setTimeout(() => {
+            enemy.canAttack = true;
+        }, enemy.attackCooldown);
     }
 
 
