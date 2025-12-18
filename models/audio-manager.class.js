@@ -85,6 +85,4 @@ class AudioManager {
             audioBackground.play();
         }
     }
-
-
 }

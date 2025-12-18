@@ -24,6 +24,9 @@ class MovableObject extends DrawableObject {
     /** @type {number} Amount of poison collected by this object */
     poisonAmount = 0;
 
+    /** @type {boolean} Whether the MoveableObject is currently attacking */
+    isAttacking = false;
+
 
     /**
      * Checks whether this object is colliding with another movable object
@@ -225,5 +228,57 @@ class MovableObject extends DrawableObject {
      */
     moveDown() {
         this.y += this.speed;
+    }
+
+
+    /**
+     * Check if the MoveableObject can attack.
+     * @returns {boolean} True if attack is possible
+     */
+    canAttack() {
+        return !this.isAttacking;
+    }
+
+
+    /**
+     * Start attack sequence.
+     */
+    startAttack() {
+        this.isAttacking = true;
+        this.currentImage = 0;
+    }
+
+
+    /**
+     * Display a single attack frame.
+     * @param {string[]} images - Animation frames
+     * @param {number} i - Frame index
+     */
+    showAttackFrame(images, i) {
+        this.img = this.imageCache[images[i]];
+    }
+
+
+    /**
+     * Check if attack animation is finished.
+     * @param {number} i - Frame index
+     * @param {string[]} images - Animation frames
+     * @returns {boolean} True if finished
+     */
+    isAttackFinished(i, images) {
+        return i >= images.length;
+    }
+
+
+    /**
+     * Finish attack animation.
+     * @param {function} [onFinish] - Optional callback
+     */
+    finishAttack(onFinish, sound) {
+        this.isAttacking = false;
+        if (onFinish) {
+            onFinish();
+            sound.play();
+        }
     }
 }

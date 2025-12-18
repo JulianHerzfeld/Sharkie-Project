@@ -131,9 +131,6 @@ class Character extends MovableObject {
     /** @type {number} Timestamp of last movement */
     lastMoveTime = Date.now();
 
-    /** @type {boolean} Whether the character is currently attacking */
-    isAttacking = false;
-
     /** @type {boolean} Whether the character can shoot */
     canShoot = true;
 
@@ -151,7 +148,12 @@ class Character extends MovableObject {
 
 
     /**
-     * Create the main character and load all animations.
+     * Creates a new character instance.
+     *
+     * Initializes the default character image, preloads all animation frames
+     * required for movement, idle states, attacks, damage reactions, and death.
+     * Additionally, an instance of {@link CharacterAnimationController} is created
+     * to handle animation state transitions and timing logic.
      */
     constructor() {
         super();
@@ -163,6 +165,7 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_LONG_IDLE);
         this.loadImages(this.IMAGES_ATTACK);
         this.loadImages(this.IMAGES_POISON_ATTACK);
+        this.animationController = new CharacterAnimationController(this);
     }
 
 
@@ -202,12 +205,13 @@ class Character extends MovableObject {
     /**
      * Updates the timestamp of the last movement or action.
      *
-     * Checks whether the player is currently performing any movement or action
-     * via keyboard input (left, right, up, down, or attack).
-     * If any relevant input is detected, the current timestamp is stored.
+     * This function checks if the character is currently moving via keyboard input
+     * (LEFT, RIGHT, UP, DOWN, SPACE) or if the character is hurt. If any of these
+     * conditions are true, it updates `lastMoveTime` to the current timestamp.
      *
-     * This timestamp is primarily used to determine idle and long-idle states
-     * for animation control.
+     * This timestamp is used to determine idle behavior and long-idle animations.
+     *
+     * @returns {void}
      */
     updateLastMoveTime() {
         const moving =
@@ -215,7 +219,8 @@ class Character extends MovableObject {
             this.world.keyboard.RIGHT ||
             this.world.keyboard.UP ||
             this.world.keyboard.DOWN ||
-            this.world.keyboard.SPACE;
+            this.world.keyboard.SPACE ||
+            this.isHurt();
 
         if (moving) {
             this.lastMoveTime = Date.now();
@@ -224,129 +229,55 @@ class Character extends MovableObject {
 
 
     /**
-     * Handles the movement of the character by calling the individual
-     * movement functions for left, right, up, and down directions.
+     * Handles character movement based on keyboard input and boundary constraints.
      *
-     * This function coordinates all directional movement, but does not
-     * return any value. Movement logic is implemented in the called functions.
+     * Evaluates the current keyboard state and moves the character accordingly
+     * (left, right, up, down), while ensuring movement stays within the defined
+     * world boundaries. Movement is blocked if the character is not allowed to move
+     * (e.g. during attacks or animations), as determined by {@link canMove}.
+     *
+     * Side effects:
+     * - Updates the character's position (`x`, `y`)
+     * - Updates the facing direction via `otherDirection`
+     *
+     * @returns {void}
      */
     handleMovement() {
-        this.characterMoveLeft();
-        this.characterMoveRight();
-        this.characterMoveUp();
-        this.characterMoveDown();
-    }
-
-
-    /**
-     * Moves the character to the left if movement in that direction is allowed.
-     *
-     * Checks whether the character can move left using `canMoveLeft()`. 
-     * If movement is possible, executes `moveLeft()`, updates the character's
-     * direction state, and plays the movement audio.
-     */
-    characterMoveLeft() {
-        if (this.canMoveLeft()) {
-            this.moveLeft();
-            this.otherDirection = true;
-            audioCharacterMove.play();
+        if (this.canMove(this.world.keyboard.LEFT, this.x > -600)) {
+            this.moveLeft(); this.otherDirection = true;
         }
-    }
-
-
-    /**
-     * Moves the character to the right if movement in that direction is allowed.
-     *
-     * Checks whether the character can move right using `canMoveRight()`. 
-     * If movement is possible, executes `moveRight()`, updates the character's
-     * direction state, and plays the movement audio.
-     */
-    characterMoveRight() {
-        if (this.canMoveRight()) {
-            this.moveRight();
-            this.otherDirection = false;
-            audioCharacterMove.play();
+        if (this.canMove(this.world.keyboard.RIGHT, this.x < 2880)) {
+            this.moveRight(); this.otherDirection = false;
         }
-    }
-
-
-    /**
-     * Moves the character upward if movement in that direction is allowed.
-     *
-     * Checks whether the character can move up using `canMoveUp()`. 
-     * If movement is possible, executes `moveUp()` and plays the movement audio.
-     */
-    characterMoveUp() {
-        if (this.canMoveUp()) {
+        if (this.canMove(this.world.keyboard.UP, this.y > -80)) {
             this.moveUp();
-            audioCharacterMove.play();
         }
-    }
-
-
-    /**
-     * Moves the character downward if movement in that direction is allowed.
-     *
-     * Checks whether the character can move down using `canMoveDown()`. 
-     * If movement is possible, executes `moveDown()` and plays the movement audio.
-     */
-    characterMoveDown() {
-        if (this.canMoveDown()) {
+        if (this.canMove(this.world.keyboard.DOWN, this.y < 310)) {
             this.moveDown();
-            audioCharacterMove.play();
         }
     }
 
 
     /**
-     * Checks if the character can move left.
+     * Determines whether the character is allowed to move in a given direction.
      *
-     * The character can move left if the LEFT key is pressed, the x-position
-     * is greater than -600, and the character is not currently attacking.
+     * Movement is permitted only if:
+     * - The corresponding movement key is currently pressed
+     * - The provided boundary condition is fulfilled
+     * - The character is not currently attacking
      *
-     * @returns {boolean} True if the character can move left, otherwise false.
+     * If movement is allowed, the movement sound effect is played.
+     *
+     * @param {boolean} keyPressed - Indicates whether the movement key is pressed.
+     * @param {boolean} condition - Boundary or state condition that must be true to allow movement.
+     * @returns {boolean} Returns `true` if movement is allowed, otherwise `false`.
      */
-    canMoveLeft() {
-        return this.world.keyboard.LEFT && this.x > -600 && !this.isAttacking;
-    }
-
-
-    /**
-     * Checks if the character can move right.
-     *
-     * The character can move right if the RIGHT key is pressed, the x-position
-     * is less than 2880, and the character is not currently attacking.
-     *
-     * @returns {boolean} True if the character can move right, otherwise false.
-     */
-    canMoveRight() {
-        return this.world.keyboard.RIGHT && this.x < 2880 && !this.isAttacking;
-    }
-
-
-    /**
-     * Checks if the character can move up.
-     *
-     * The character can move up if the UP key is pressed, the y-position
-     * is greater than -80, and the character is not currently attacking.
-     *
-     * @returns {boolean} True if the character can move up, otherwise false.
-     */
-    canMoveUp() {
-        return this.world.keyboard.UP && this.y > -80 && !this.isAttacking;
-    }
-
-
-    /**
-     * Checks if the character can move down.
-     *
-     * The character can move down if the DOWN key is pressed, the y-position
-     * is less than 310, and the character is not currently attacking.
-     *
-     * @returns {boolean} True if the character can move down, otherwise false.
-     */
-    canMoveDown() {
-        return this.world.keyboard.DOWN && this.y < 310 && !this.isAttacking;
+    canMove(keyPressed, condition) {
+        if (keyPressed && condition && !this.isAttacking) {
+            audioCharacterMove.play();
+            return true;
+        }
+        return false;
     }
 
 
@@ -366,55 +297,21 @@ class Character extends MovableObject {
 
 
     /**
-     * Starts the character's animation loop.
+     * Starts the animation update loop for the character.
      *
-     * Uses the world's `setStoppableInterval` method to repeatedly call
-     * `updateAnimationState()` every 130 milliseconds, updating the character's
-     * animation frames.
+     * This loop periodically delegates animation state handling to the
+     * {@link CharacterAnimationController}, which decides which animation
+     * should currently be played (idle, swim, attack, hurt, or death).
+     *
+     * The loop is registered as a stoppable interval via the world instance
+     * and runs approximately every 130 milliseconds.
+     *
+     * @returns {void}
      */
     startAnimationLoop() {
         this.world.setStoppableInterval(() => {
-            this.updateAnimationState();
+            this.animationController.update();
         }, 130);
-    }
-
-
-    /**
-     * Updates the character's animation state based on current conditions.
-     *
-     * Determines which animation or state should be active:
-     * - If the character is dead, triggers the dead state.
-     * - If the character is hurt and not attacking, triggers the hurt state.
-     * - If the character is moving via keyboard input, triggers the swimming state.
-     * - If the character is attacking, stops snoring animation.
-     * - If the SPACE key is pressed, stops snoring animation.
-     * - If the character has been idle for more than 8000 ms, triggers the long idle state.
-     * - Otherwise, triggers the normal idle state.
-     */
-    updateAnimationState() {
-        const idleTime = Date.now() - this.lastMoveTime;
-
-        if (this.isDead()) {
-            this.handleDeadState();
-        }
-        else if (this.isHurt() && !this.isAttacking) {
-            this.handleHurtState();
-        }
-        else if (this.isMovingByKeyboard()) {
-            this.handleSwimState();
-        }
-        else if (this.isAttacking) {
-            this.stopSnoring();
-        }
-        else if (this.world.keyboard.SPACE) {
-            this.stopSnoring();
-        }
-        else if (idleTime > 8000) {
-            this.handleLongIdleState();
-        }
-        else {
-            this.handleIdleState();
-        }
     }
 
 
@@ -436,74 +333,6 @@ class Character extends MovableObject {
 
 
     /**
-     * Handles the character's dead state.
-     *
-     * Stops any snoring animation and triggers the character's death sequence
-     * by calling `die()`.
-     */
-    handleDeadState() {
-        this.stopSnoring();
-        this.die();
-    }
-
-
-    /**
-     * Handles the character's hurt state.
-     *
-     * Stops any snoring animation and plays the hurt animation
-     * by using the `IMAGES_HURT` animation frames.
-     */
-    handleHurtState() {
-        this.stopSnoring();
-        this.playAnimation(this.IMAGES_HURT);
-    }
-
-
-    /**
-     * Handles the character's swimming/moving state.
-     *
-     * Stops any snoring animation and, if the character is not attacking,
-     * plays the swimming animation using the `IMAGES_SWIM` frames.
-     */
-    handleSwimState() {
-        this.stopSnoring();
-        if (!this.isAttacking) {
-            this.playAnimation(this.IMAGES_SWIM);
-        }
-    }
-
-
-    /**
-     * Handles the character's long idle state.
-     *
-     * Plays the long idle animation using `IMAGES_LONG_IDLE`. 
-     * If the character is not already snoring, starts the snoring audio
-     * in a loop and sets the `isSnoring` flag to true.
-     */
-    handleLongIdleState() {
-        this.playAnimation(this.IMAGES_LONG_IDLE);
-
-        if (!this.isSnoring) {
-            audioCharacterSnore.loop = true;
-            audioCharacterSnore.play();
-            this.isSnoring = true;
-        }
-    }
-
-
-    /**
-     * Handles the character's normal idle state.
-     *
-     * Stops any snoring animation and plays the standard idle animation
-     * using the `IMAGES_IDLE` frames.
-     */
-    handleIdleState() {
-        this.stopSnoring();
-        this.playAnimation(this.IMAGES_IDLE);
-    }
-
-
-    /**
      * Stops the character's snoring sound if it is currently playing.
      * Resets the audio playback and updates the snoring state.
      */
@@ -512,17 +341,6 @@ class Character extends MovableObject {
             audioCharacterSnore.pause();
             audioCharacterSnore.currentTime = 0;
             this.isSnoring = false;
-        }
-    }
-
-
-    /**
-     * Check if the character is idle.
-     * @returns {boolean} True if idle
-     */
-    idle() {
-        if (!this.isDead() && !this.isHurt() && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.world.keyboard.UP && !this.world.keyboard.DOWN) {
-            return true;
         }
     }
 
@@ -544,27 +362,9 @@ class Character extends MovableObject {
 
             if (this.isAttackFinished(i, images)) {
                 clearInterval(interval);
-                this.finishAttack(onFinish);
+                this.finishAttack(onFinish, audioCharacterAttack);
             }
         }, 80);
-    }
-
-
-    /**
-     * Check if the character can attack.
-     * @returns {boolean} True if attack is possible
-     */
-    canAttack() {
-        return !this.isAttacking;
-    }
-
-
-    /**
-     * Start attack sequence.
-     */
-    startAttack() {
-        this.isAttacking = true;
-        this.currentImage = 0;
     }
 
 
@@ -574,40 +374,6 @@ class Character extends MovableObject {
      */
     getAttackImages() {
         return this.poisonAmount > 0 ? this.IMAGES_POISON_ATTACK : this.IMAGES_ATTACK;
-    }
-
-
-    /**
-     * Display a single attack frame.
-     * @param {string[]} images - Animation frames
-     * @param {number} i - Frame index
-     */
-    showAttackFrame(images, i) {
-        this.img = this.imageCache[images[i]];
-    }
-
-
-    /**
-     * Check if attack animation is finished.
-     * @param {number} i - Frame index
-     * @param {string[]} images - Animation frames
-     * @returns {boolean} True if finished
-     */
-    isAttackFinished(i, images) {
-        return i >= images.length;
-    }
-
-
-    /**
-     * Finish attack animation.
-     * @param {function} [onFinish] - Optional callback
-     */
-    finishAttack(onFinish) {
-        this.isAttacking = false;
-        if (onFinish) {
-            onFinish();
-            audioCharacterAttack.play();
-        }
     }
 
 
