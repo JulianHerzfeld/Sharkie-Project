@@ -7,9 +7,9 @@
 class CharacterAnimationController {
 
     /**
-     * @type {Object} c - The character instance being controlled.
+     * @type {Object} character - The character instance being controlled.
      */
-    c;
+    character;
 
 
     /**
@@ -18,7 +18,7 @@ class CharacterAnimationController {
      * @param {Object} character - The character instance to control.
      */
     constructor(character) {
-        this.c = character;
+        this.character = character;
     }
 
 
@@ -34,12 +34,12 @@ class CharacterAnimationController {
      * - Normal idle otherwise
      */
     update() {
-        const idleTime = Date.now() - this.c.lastMoveTime;
+        const idleTime = Date.now() - this.character.lastMoveTime;
 
-        if (this.c.isDead()) return this.dead();
-        if (this.c.isHurt() && !this.c.isAttacking) return this.hurt();
-        if (this.c.isMovingByKeyboard()) return this.swim();
-        if (this.c.isAttacking || this.c.world.keyboard.SPACE) return this.c.stopSnoring();
+        if (this.character.isDead()) return this.dead();
+        if (this.character.isHurt() && !this.character.isAttacking) return this.hurt();
+        if (this.character.isMovingByKeyboard()) return this.swim();
+        if (this.character.isAttacking || this.character.world.keyboard.SPACE) return this.character.stopSnoring();
         if (idleTime > 8000) return this.longIdle();
 
         this.idle();
@@ -55,9 +55,9 @@ class CharacterAnimationController {
      * @returns {void}
      */
     swim() {
-        this.c.stopSnoring();
-        if (!this.c.isAttacking) {
-            this.c.playAnimation(this.c.IMAGES_SWIM);
+        this.character.stopSnoring();
+        if (!this.character.isAttacking) {
+            this.character.playAnimation(this.character.IMAGES_SWIM);
         }
     }
 
@@ -71,8 +71,8 @@ class CharacterAnimationController {
      * @returns {void}
      */
     idle() {
-        this.c.stopSnoring();
-        this.c.playAnimation(this.c.IMAGES_IDLE);
+        this.character.stopSnoring();
+        this.character.playAnimation(this.character.IMAGES_IDLE);
     }
 
 
@@ -86,11 +86,11 @@ class CharacterAnimationController {
      * @returns {void}
      */
     longIdle() {
-        this.c.playAnimation(this.c.IMAGES_LONG_IDLE);
-        if (!this.c.isSnoring) {
+        this.character.playAnimation(this.character.IMAGES_LONG_IDLE);
+        if (!this.character.isSnoring) {
             audioCharacterSnore.loop = true;
             audioCharacterSnore.play();
-            this.c.isSnoring = true;
+            this.character.isSnoring = true;
         }
     }
 
@@ -104,8 +104,8 @@ class CharacterAnimationController {
      * @returns {void}
      */
     hurt() {
-        this.c.stopSnoring();
-        this.c.playAnimation(this.c.IMAGES_HURT);
+        this.character.stopSnoring();
+        this.character.playAnimation(this.character.IMAGES_HURT);
     }
 
 
@@ -118,7 +118,7 @@ class CharacterAnimationController {
      * @returns {void}
      */
     dead() {
-        this.c.stopSnoring();
-        this.c.die();
+        this.character.stopSnoring();
+        this.character.die();
     }
 }
